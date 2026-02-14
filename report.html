@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon Report Card Generator</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <nav class="navbar no-print">
+        <div class="nav-container">
+            <div class="brand">
+                <a href="dashboard.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;">
+                    <i data-lucide="graduation-cap" class="brand-icon"></i>
+                    <span class="brand-name">Top Horizon Reports</span>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <span id="save-indicator"
+                    style="margin-right:15px; color:#666; font-size:12px; opacity:0; transition:opacity 0.3s;">Saved</span>
+                <span id="user-display" style="margin-right:15px; font-weight:bold; color:var(--theme-orange)"></span>
+                <a href="dashboard.html" class="btn btn-secondary"
+                    style="text-decoration:none; margin-right:5px; display:inline-flex; align-items:center; gap:5px;">
+                    <i data-lucide="arrow-left" style="width:16px; height:16px;"></i> Back
+                </a>
+                <button class="btn btn-secondary" id="save-btn"
+                    style="background:#eab308; color:black; border:none; font-weight:bold;">Save</button>
+                <button class="btn btn-secondary" id="reset-btn">Reset</button>
+                <button class="btn btn-primary" onclick="window.print()">Print Result</button>
+                <button class="btn btn-danger" id="logout-btn"
+                    style="background:#ef4444; color:white; border:none; margin-left:10px;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <script type="module">
+        import { checkSession, logout } from './js/modules/auth.js';
+        const user = checkSession();
+        if (user) {
+            document.getElementById('user-display').textContent = user.class;
+            // Auto-fill Class and disable it
+            const classInput = document.getElementById('inp-class');
+            if (classInput) {
+                classInput.value = user.class;
+                classInput.setAttribute('readonly', 'true');
+                classInput.style.backgroundColor = '#f0f0f0';
+                // Trigger input event to update preview
+                classInput.dispatchEvent(new Event('input'));
+            }
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            if (confirm('Log out?')) logout();
+        });
+    </script>
+
+    <main class="app-container">
+
+        <!-- INPUT SECTION -->
+        <section class="input-section no-print">
+
+
+
+            <!-- Bio Data -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Student Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <input type="text" id="inp-name" placeholder="Name">
+                        <input type="text" id="inp-class" placeholder="Class (e.g. JS2)">
+                        <input type="text" id="inp-roll" placeholder="No. in Roll">
+                        <input type="text" id="inp-term" placeholder="Term (e.g. Third)">
+                        <input type="text" id="inp-session" placeholder="Session (e.g. 2024/2025)">
+                        <input type="text" id="inp-next-term" placeholder="Next Term Begins">
+                        <div class="row-inputs">
+                            <input type="text" id="inp-age" placeholder="Age">
+                            <input type="text" id="inp-sex" placeholder="Sex">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academics -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Cognitive Assessment</h3>
+                    <button class="btn btn-sm btn-outline" id="add-subject-btn">+ Subject</button>
+                </div>
+                <div class="card-body">
+                    <div id="subjects-container">
+                        <!-- Dynamic Rows -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Affective Domain -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Affective Attributes (A-E)</h3>
+                </div>
+                <div class="card-body">
+                    <div class="traits-grid" id="affective-container">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Psychomotor Domain -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Psychomotor Attributes (A-E)</h3>
+                </div>
+                <div class="card-body">
+                    <div class="traits-grid" id="psychomotor-container">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance & Remarks -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Attendance & Comments</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <input type="number" id="inp-days-open" placeholder="Times School Opened">
+                        <input type="number" id="inp-days-present" placeholder="Times Present">
+                        <textarea id="inp-teacher-comment" placeholder="Class Teacher's Comment"></textarea>
+                        <textarea id="inp-principal-comment" placeholder="Principal's Comment"></textarea>
+
+                        <div class="row-inputs"
+                            style="grid-column: span 2; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px;">
+
+                            <div style="flex:1">
+                                <label style="font-size:12px; font-weight:bold;">Principal Signature:</label>
+                                <input type="file" id="inp-principal-sig" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- PREVIEW SECTION -->
+        <section class="preview-section">
+            <div class="report-paper" id="report-card">
+
+                <!-- HEADER -->
+                <header class="report-header">
+                    <div class="logo-box">
+                        <img src="assets/logo.png"
+                            onerror="this.src='assets/logo.jpeg'; this.onerror=function(){this.src='assets/logo.jpg'; this.onerror=function(){this.src='assets/logo.svg'}}"
+                            alt="School Logo" style="max-width:100%; max-height:100%;">
+                    </div>
+                    <div class="school-details">
+                        <h1 contenteditable="true">TOP HORIZON NURSERY AND PRIMARY SCHOOL</h1>
+                        <p contenteditable="true">70 AILEGUN RD, EJIGBO, LAGOS</p>
+                        <p contenteditable="true">08033441520</p>
+                        <i contenteditable="true">KNOWLEDGE AND COURAGE</i>
+                    </div>
+                </header>
+
+                <div class="orange-bar">TERMLY CONTINUOUS ASSESSMENT RESULT</div>
+
+                <!-- SECTION A: STUDENT INFO -->
+                <div class="info-section">
+                    <div class="orange-bar-sm">A - STUDENT'S INFORMATION</div>
+                    <table class="info-table">
+                        <tr>
+                            <td class="label">Report for:</td>
+                            <td class="val-lg" id="out-term"></td>
+                            <td class="label">Class:</td>
+                            <td class="val" id="out-class"></td>
+                            <td class="label">Name:</td>
+                            <td class="val-xl" id="out-name"></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Session:</td>
+                            <td class="val" id="out-session"></td>
+                            <td class="label">No. in Roll:</td>
+                            <td class="val" id="out-roll"></td>
+                            <td class="label">Position:</td>
+                            <td class="val" id="out-position">-</td> <!-- Calculated later -->
+                        </tr>
+                        <tr>
+                            <td class="label">Next Term Begins:</td>
+                            <td class="val" id="out-next-term"></td>
+                            <td class="label">Percentage:</td>
+                            <td class="val" id="out-percentage"></td>
+                            <td class="label">Average:</td>
+                            <td class="val" id="out-avg"></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Age:</td>
+                            <td class="val" id="out-age"></td>
+                            <td class="label">Sex:</td>
+                            <td class="val" id="out-sex"></td>
+                            <td class="label">Total:</td>
+                            <td class="val" id="out-total"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- MAIN CONTENT GRID -->
+                <div class="main-grid">
+
+                    <!-- LEFT COLUMN: COGNITIVE -->
+                    <div class="col-left">
+                        <div class="orange-bar-sm">B - COGNITIVE ASSESSMENT</div>
+                        <table class="academic-table" id="academic-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%">SN</th>
+                                    <th style="width: 40%">SUBJECTS</th>
+                                    <th style="width: 10%" class="vertical-text">C.A (40)</th>
+                                    <th style="width: 10%" class="vertical-text">EXAM (60)</th>
+                                    <th style="width: 10%" class="vertical-text">TOTAL</th>
+                                    <th style="width: 10%">GRADE</th>
+                                    <th style="width: 15%">REMARK</th>
+                                </tr>
+                            </thead>
+                            <tbody id="academic-body">
+                                <!-- JS Injected -->
+                            </tbody>
+                        </table>
+
+                        <!-- PERFORMANCE CHART PLACEHOLDER (CSS Chart) -->
+                        <div class="chart-section">
+                            <div class="orange-bar-sm">TERMLY AVERAGE PERFORMANCE CHART (%)</div>
+                            <div class="chart-container" id="chart-container">
+                                <!-- Simple CSS Bars injected here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: ATTRIBUTES -->
+                    <div class="col-right">
+
+                        <!-- AFFECTIVE -->
+                        <div class="orange-bar-sm">AFFECTIVE ATTRIBUTES</div>
+                        <table class="attr-table">
+                            <thead>
+                                <tr>
+                                    <th>ATTRIBUTES</th>
+                                    <th style="width: 40px">GRADE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="affective-body">
+                                <!-- JS Injected -->
+                            </tbody>
+                        </table>
+
+                        <!-- PSYCHOMOTOR -->
+                        <div class="orange-bar-sm" style="margin-top: 10px">PSYCHOMOTOR ATTRIBUTES</div>
+                        <table class="attr-table">
+                            <tbody id="psychomotor-body">
+                                <!-- JS Injected -->
+                            </tbody>
+                        </table>
+
+                        <!-- KEYS -->
+                        <div class="keys-table-wrapper">
+                            <div class="orange-bar-sm">KEYS TO RATING</div>
+                            <table class="keys-table">
+                                <tr>
+                                    <td>75-100</td>
+                                    <td>A1</td>
+                                </tr>
+                                <tr>
+                                    <td>70-74</td>
+                                    <td>B2</td>
+                                </tr>
+                                <tr>
+                                    <td>65-69</td>
+                                    <td>B3</td>
+                                </tr>
+                                <tr>
+                                    <td>60-64</td>
+                                    <td>C4</td>
+                                </tr>
+                                <tr>
+                                    <td>50-59</td>
+                                    <td>C5</td>
+                                </tr>
+                                <tr>
+                                    <td>45-49</td>
+                                    <td>C6</td>
+                                </tr>
+                                <tr>
+                                    <td>40-44</td>
+                                    <td>D7</td>
+                                </tr>
+                                <tr>
+                                    <td>0-39</td>
+                                    <td>F9</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- ATTENDANCE -->
+                        <div class="orange-bar-sm" style="margin-top: 10px">ATTENDANCE</div>
+                        <table class="attendance-table">
+                            <tr>
+                                <td>No. of Times School Opened:</td>
+                                <td id="out-opens" class="val-box"></td>
+                            </tr>
+                            <tr>
+                                <td>No. of Times Present:</td>
+                                <td id="out-present" class="val-box"></td>
+                            </tr>
+                            <tr>
+                                <td>No. of Times Absent:</td>
+                                <td id="out-absent" class="val-box"></td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="footer-section">
+                    <div class="orange-bar-sm">COMMENTS</div>
+                    <div class="comments-grid">
+
+                        <div class="comment-row">
+                            <span class="cmt-label">CLASS TEACHER</span>
+                            <div class="cmt-line-group">
+                                <div class="cmt-line" id="out-teacher-cmt"></div>
+                            </div>
+                        </div>
+
+                        <div class="comment-row">
+                            <span class="cmt-label">PRINCIPAL</span>
+                            <div class="cmt-line-group">
+                                <div class="cmt-line" id="out-principal-cmt"></div>
+                                <div class="sign-line">
+                                    <img id="out-principal-sig" class="signature-img" src="" alt="SIGN"
+                                        style="display:none">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        </section>
+
+    </main>
+    <script type="module" src="js/app.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
