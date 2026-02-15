@@ -29,9 +29,7 @@ body {
     overflow: hidden;
 }
 
-.no-print {
-    /* Navbar & Input styling same as before */
-}
+
 
 .navbar {
     height: 60px;
@@ -95,17 +93,37 @@ body {
 }
 
 .form-grid input,
+.form-grid select,
 .form-grid textarea {
     width: 100%;
-    padding: 6px;
-    border: 1px solid #ccc;
-    font-size: 13px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color: #333;
+    font-family: inherit;
+}
+
+.form-grid input:hover,
+.form-grid select:hover,
+.form-grid textarea:hover {
+    border-color: #bdbdbd;
+}
+
+.form-grid input:focus,
+.form-grid select:focus,
+.form-grid textarea:focus {
+    border-color: var(--theme-orange);
+    box-shadow: 0 0 0 3px rgba(93, 63, 211, 0.1);
+    outline: none;
 }
 
 .form-grid textarea {
     grid-column: span 2;
-    height: 50px;
-    resize: none;
+    height: 80px;
+    resize: vertical;
 }
 
 .row-inputs {
@@ -123,8 +141,18 @@ body {
 }
 
 .subject-row-input input {
-    padding: 5px;
-    border: 1px solid #ccc;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.subject-row-input input:focus {
+    border-color: var(--theme-orange);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(93, 63, 211, 0.1);
 }
 
 .inp-sub-name {
@@ -133,7 +161,8 @@ body {
 
 .inp-sub-ca,
 .inp-sub-exam {
-    width: 50px;
+    width: 60px;
+    /* Slightly wider */
     text-align: center;
 }
 
@@ -141,8 +170,8 @@ body {
 .traits-grid {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 5px;
-    row-gap: 5px;
+    gap: 8px;
+    align-items: center;
 }
 
 .trait-row {
@@ -286,40 +315,67 @@ body {
 
 /* Main Grid */
 .main-grid {
-    display: grid;
-    grid-template-columns: 65% 34%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     gap: 1%;
+    /* Adjusted to give more gap */
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+/* Columns */
+.col-left {
+    width: 63%;
+    overflow: hidden;
+}
+
+.col-right {
+    width: 36%;
+    overflow: hidden;
 }
 
 /* Academic Table */
 .academic-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 12px;
-    /* Increased from 10px */
+    font-size: 10px;
     border: 1px solid black;
     margin-bottom: 10px;
+    table-layout: fixed;
+    /* Force table to respect container width */
 }
 
 .academic-table th {
     border: 1px solid black;
-    padding: 8px;
-    /* Increased from 4px */
+    padding: 2px 4px;
     text-align: center;
     font-weight: bold;
     background: white;
-    font-size: 12px;
-    /* Explicitly set */
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .academic-table td {
     border: 1px solid black;
-    padding: 6px 8px;
-    /* Increased from 2px 4px */
+    padding: 2px 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* Prevent wrapping causing height issues */
+}
+
+/* Adjust column width slightly to prioritize subject name */
+.col-left {
+    overflow: hidden;
+    /* Ensure content doesn't bleed out */
 }
 
 .vertical-text {
     white-space: nowrap;
+    font-size: 9px;
+    /* Smaller for headers */
 }
 
 /* Simplified from reference to keep readable */
@@ -328,8 +384,11 @@ body {
 .attr-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 10px;
+    font-size: 9px;
+    /* Slightly smaller */
     border: 1px solid black;
+    table-layout: fixed;
+    /* Crucial: prevent expansion */
 }
 
 .attr-table th {
@@ -337,17 +396,24 @@ body {
     border: 1px solid black;
     padding: 2px;
     text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .attr-table td {
     border: 1px solid black;
     padding: 2px 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .attr-table td:last-child {
     text-align: center;
     font-weight: bold;
     background: var(--theme-orange);
+    width: 30px;
+    /* Force small width regarding grade */
 }
 
 /* Keys Table */
@@ -429,9 +495,27 @@ body {
 .sign-line {
     width: 100px;
     border-top: 1px solid black;
-    text-align: center;
-    font-size: 9px;
-    padding-top: 2px;
+    height: 0;
+    position: relative;
+    margin-left: 10px;
+    margin-top: 15px;
+}
+
+.signature-img {
+    position: absolute;
+    bottom: -5px;
+    /* Move it down slightly so the signature baseline hits the line? No, let's try pushing it up a bit if it was overlapping */
+    /* If bottom:0 aligns bottom of image to line. */
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    max-height: 30px;
+    /* Small but visible */
+    width: auto;
+    margin-bottom: 1px;
+    /* Just above line */
+    pointer-events: none;
+    mix-blend-mode: multiply;
 }
 
 /* Simple Chart */
@@ -453,9 +537,13 @@ body {
     }
 
     body {
+        margin: 0;
+        padding: 0;
         background: white;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+        width: 210mm;
+        height: 297mm;
     }
 
     .no-print,
@@ -468,25 +556,107 @@ body {
         display: block;
         padding: 0;
         height: auto;
+        overflow: visible;
     }
 
     .preview-section {
         padding: 0;
         background: white;
+        display: block;
+        width: 100%;
+        height: 100%;
     }
 
     .report-paper {
         box-shadow: none;
-        width: 100%;
-        min-height: 100vh;
+        width: 210mm;
+        /* Allow height to grow so JS can measure and scale back */
+        height: auto;
+        min-height: 296mm;
         padding: 5mm;
+        margin: 0 auto;
+        page-break-after: always;
+        overflow: visible;
+        position: relative;
     }
 
     /* Force colors */
     .orange-bar,
-    .orange-bar-sm,
-    .attr-table td:last-child {
+    .orange-bar-sm {
         background: var(--theme-orange) !important;
         -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color: black !important;
     }
+}
+
+/* --- Global Config Modal --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-box {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.modal-box h3 {
+    margin-top: 0;
+    color: var(--theme-dark);
+    margin-bottom: 20px;
+}
+
+.modal-box label {
+    text-align: left;
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #555;
+}
+
+.modal-box input,
+.modal-box select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.modal-box button {
+    margin-top: 25px;
+    width: 100%;
+    padding: 12px;
+    background: var(--theme-orange);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.modal-box button:hover {
+    opacity: 0.9;
 }

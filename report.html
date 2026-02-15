@@ -35,7 +35,7 @@
                 <button class="btn btn-secondary" id="save-btn"
                     style="background:#eab308; color:black; border:none; font-weight:bold;">Save</button>
                 <button class="btn btn-secondary" id="reset-btn">Reset</button>
-                <button class="btn btn-primary" onclick="window.print()">Print Result</button>
+                <button class="btn btn-primary" onclick="window.print()">Download / Print</button>
                 <button class="btn btn-danger" id="logout-btn"
                     style="background:#ef4444; color:white; border:none; margin-left:10px;">Logout</button>
             </div>
@@ -80,12 +80,22 @@
                         <input type="text" id="inp-name" placeholder="Name">
                         <input type="text" id="inp-class" placeholder="Class (e.g. JS2)">
                         <input type="text" id="inp-roll" placeholder="No. in Roll">
-                        <input type="text" id="inp-term" placeholder="Term (e.g. Third)">
+                        <input type="text" id="inp-adm-no" placeholder="Admission Number" style="width:100%">
+                        <select id="inp-term">
+                            <option value="" disabled selected>Select Term</option>
+                            <option value="First Term">First Term</option>
+                            <option value="Second Term">Second Term</option>
+                            <option value="Third Term">Third Term</option>
+                        </select>
                         <input type="text" id="inp-session" placeholder="Session (e.g. 2024/2025)">
-                        <input type="text" id="inp-next-term" placeholder="Next Term Begins">
+                        <input type="date" id="inp-next-term" placeholder="Next Term Begins" title="Next Term Begins">
                         <div class="row-inputs">
                             <input type="text" id="inp-age" placeholder="Age">
-                            <input type="text" id="inp-sex" placeholder="Sex">
+                            <select id="inp-sex">
+                                <option value="" disabled selected>Select Sex</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -141,7 +151,7 @@
                         <textarea id="inp-principal-comment" placeholder="Principal's Comment"></textarea>
 
                         <div class="row-inputs"
-                            style="grid-column: span 2; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px;">
+                            style="grid-column: span 2; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; display: none;">
 
                             <div style="flex:1">
                                 <label style="font-size:12px; font-weight:bold;">Principal Signature:</label>
@@ -194,6 +204,11 @@
                             <td class="val" id="out-roll"></td>
                             <td class="label">Position:</td>
                             <td class="val" id="out-position">-</td> <!-- Calculated later -->
+                        </tr>
+                        <tr>
+                            <td class="label">Admission No:</td>
+                            <td class="val" id="out-adm-no" colspan="5" style="text-align:left; padding-left:10px;">
+                            </td>
                         </tr>
                         <tr>
                             <td class="label">Next Term Begins:</td>
@@ -362,6 +377,104 @@
         </section>
 
     </main>
+
+    <!-- SETUP MODAL -->
+    <div id="setup-modal" class="modal-overlay no-print">
+        <div class="modal-box">
+            <h3>Academic Session Config</h3>
+            <p style="color:#666; margin-bottom:20px;">Please set the session details for your reports.</p>
+
+            <label>Current Session (Year)</label>
+            <input type="text" id="setup-session" placeholder="e.g. 2024/2025">
+
+            <label>Current Term</label>
+            <select id="setup-term">
+                <option value="First Term">First Term</option>
+                <option value="Second Term">Second Term</option>
+                <option value="Third Term">Third Term</option>
+            </select>
+
+            <label>Next Term Begins</label>
+            <input type="date" id="setup-next-term">
+
+            <button id="btn-start-session">Continue</button>
+        </div>
+    </div>
+
     <script type="module" src="js/app.js"></script>
     <script>lucide.createIcons();</script>
+    <script>
+        // Auto-scale to fit A4 (Debounced)
+        let scaleTimeout;
+
+        function autoScaleReport() {
+            clearTimeout(scaleTimeout);
+            scaleTimeout = setTimeout(() => {
+                const report = document.querySelector('.report-paper');
+                if (!report) return;
+
+                // Reset to measure true height
+                report.style.zoom = '1';
+                report.style.height = 'auto'; // ensure it can grow to measure
+
+                const a4HeightMm = 296; // 297mm - 1mm buffer
+                const mmToPx = 3.78; // Approx px per mm at 96 DPI
+                const a4HeightPx = a4HeightMm * mmToPx;
+
+                // Force redraw/recalc is expensive, do selectively
+                // void report.offsetHeight; 
+
+                const contentHeight = report.scrollHeight;
+
+                // Only scale down if content is larger
+                if (contentHeight > a4HeightPx + 5) { // 5px buffer
+                    const scale = a4HeightPx / contentHeight;
+                    // Use ZOOM which affects layout flow (unlike transform)
+                    report.style.zoom = scale;
+                } else {
+                    report.style.zoom = '1';
+                }
+            }, 100); // 100ms debounce
+        }
+
+        function forceScaleImmediate() {
+            clearTimeout(scaleTimeout);
+            const report = document.querySelector('.report-paper');
+            if (!report) return;
+            // Immediate logic for print
+            report.style.zoom = '1';
+            report.style.height = 'auto';
+            const a4HeightPx = 296 * 3.78;
+            if (report.scrollHeight > a4HeightPx + 5) {
+                report.style.zoom = a4HeightPx / report.scrollHeight;
+            }
+        }
+
+        // Run on load and before print
+        window.addEventListener('load', autoScaleReport);
+        window.addEventListener('resize', autoScaleReport);
+
+        if (window.matchMedia) {
+            const mediaQueryList = window.matchMedia('print');
+            mediaQueryList.addListener(function (mql) {
+                if (mql.matches) {
+                    forceScaleImmediate();
+                }
+            });
+        }
+
+        // Listen for BeforePrint event as well
+        window.addEventListener('beforeprint', forceScaleImmediate);
+
+        // Also observe mutations in case content changes dynamically
+        const observer = new MutationObserver(autoScaleReport);
+        observer.observe(document.querySelector('.report-paper'), {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            characterData: true
+        });
+    </script>
 </body>
+
+</html>

@@ -55,7 +55,7 @@ function setSession(classId) {
 
 export function logout() {
     sessionStorage.removeItem('th_user');
-    window.location.href = 'index.html';
+    window.location.href = 'login.html';
 }
 
 export function getCurrentUser() {
@@ -66,7 +66,7 @@ export function getCurrentUser() {
 export function checkSession() {
     const user = getCurrentUser();
     if (!user) {
-        window.location.href = 'index.html';
+        window.location.href = 'login.html';
         return null;
     }
     return user;

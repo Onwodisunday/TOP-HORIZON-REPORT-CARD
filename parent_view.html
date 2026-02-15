@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Result - Top Horizon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background: #f3f4f6;
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* List View */
+        .results-list {
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid #e5e7eb;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--theme-orange);
+        }
+
+        .result-title {
+            font-weight: bold;
+            font-size: 18px;
+            color: #111827;
+        }
+
+        .result-meta {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Report View */
+        #report-view {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-back {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-print {
+            background: var(--theme-orange);
+            color: white;
+        }
+
+        /* Ensure print styles work */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+
+            .no-print,
+            .controls,
+            .header-area {
+                display: none !important;
+            }
+
+            #report-view {
+                display: block !important;
+                margin: 0;
+            }
+
+            .report-paper {
+                box-shadow: none;
+                border: none;
+                margin: 0;
+                padding: 0;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header-area no-print" style="margin-bottom:30px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h1 style="margin:0; font-size:24px; color:#1f2937;">Student Dashboard</h1>
+                    <p style="margin:5px 0 0; color:#6b7280;" id="welcome-text">Welcome</p>
+                </div>
+                <a href="parent.html"
+                    style="color:#ef4444; text-decoration:none; font-size:14px; font-weight:500;">Logout</a>
+            </div>
+            <hr style="border:0; border-top:1px solid #e5e7eb; margin-top:20px;">
+        </div>
+
+        <!-- LIST VIEW -->
+        <div id="list-view" class="no-print">
+            <h2 style="font-size:18px; margin-bottom:15px; color:#374151;">Available Results</h2>
+            <div id="results-grid" class="results-list">
+                <!-- JS Injected -->
+            </div>
+        </div>
+
+        <!-- REPORT VIEW -->
+        <div id="report-view">
+            <div class="controls no-print">
+                <button onclick="showList()" class="btn btn-back">
+                    <i data-lucide="arrow-left" style="width:16px"></i> Back to List
+                </button>
+                <div style="font-weight:bold; font-size:18px; color:var(--theme-dark);" id="view-title"></div>
+                <button onclick="window.print()" class="btn btn-print">
+                    <i data-lucide="printer" style="width:16px"></i> Print / Download PDF
+                </button>
+            </div>
+
+            <!-- COPIED FROM reports.html -->
+            <div class="report-paper" id="report-card">
+                <!-- HEADER -->
+                <header class="report-header">
+                    <div class="logo-box">
+                        <img src="assets/logo.png" onerror="this.src='assets/logo.jpeg'" alt="School Logo"
+                            style="max-width:100%; max-height:100%;">
+                    </div>
+                    <div class="school-details">
+                        <h1>TOP HORIZON NURSERY AND PRIMARY SCHOOL</h1>
+                        <p>70 AILEGUN RD, EJIGBO, LAGOS</p>
+                        <p>08033441520</p>
+                        <i>KNOWLEDGE AND COURAGE</i>
+                    </div>
+                </header>
+
+                <div class="orange-bar">TERMLY CONTINUOUS ASSESSMENT RESULT</div>
+
+                <!-- INFO SECTION -->
+                <div class="info-section">
+                    <div class="orange-bar-sm">A - STUDENT'S INFORMATION</div>
+                    <table class="info-table">
+                        <tr>
+                            <td class="label">Report for:</td>
+                            <td class="val-lg" id="out-term"></td>
+                            <td class="label">Class:</td>
+                            <td class="val" id="out-class"></td>
+                            <td class="label">Name:</td>
+                            <td class="val-xl" id="out-name"></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Session:</td>
+                            <td class="val" id="out-session"></td>
+                            <td class="label">Position:</td>
+                            <td class="val" id="out-position">-</td>
+                            <td class="label">No. in Roll:</td>
+                            <td class="val" id="out-roll"></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Admission No:</td>
+                            <td class="val" id="out-adm-no" colspan="5" style="text-align:left; padding-left:10px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Next Term Begins:</td>
+                            <td class="val" id="out-next-term"></td>
+                            <td class="label">Percentage:</td>
+                            <td class="val" id="out-percentage"></td>
+                            <td class="label">Average:</td>
+                            <td class="val" id="out-avg"></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Age:</td>
+                            <td class="val" id="out-age"></td>
+                            <td class="label">Sex:</td>
+                            <td class="val" id="out-sex"></td>
+                            <td class="label">Total:</td>
+                            <td class="val" id="out-total"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- MAIN GRID -->
+                <div class="main-grid">
+                    <div class="col-left">
+                        <div class="orange-bar-sm">B - COGNITIVE ASSESSMENT</div>
+                        <table class="academic-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%">SN</th>
+                                    <th style="width: 40%">SUBJECTS</th>
+                                    <th style="width: 10%" class="vertical-text">C.A (40)</th>
+                                    <th style="width: 10%" class="vertical-text">EXAM (60)</th>
+                                    <th style="width: 10%" class="vertical-text">TOTAL</th>
+                                    <th style="width: 10%">GRADE</th>
+                                    <th style="width: 15%">REMARK</th>
+                                </tr>
+                            </thead>
+                            <tbody id="academic-body"></tbody>
+                        </table>
+
+                        <div class="chart-section">
+                            <div class="orange-bar-sm">TERMLY AVERAGE PERFORMANCE CHART (%)</div>
+                            <div class="chart-container" id="chart-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-right">
+                        <div class="orange-bar-sm">AFFECTIVE ATTRIBUTES</div>
+                        <table class="attr-table">
+                            <thead>
+                                <tr>
+                                    <th>ATTRIBUTES</th>
+                                    <th style="width: 40px">GRADE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="affective-body"></tbody>
+                        </table>
+
+                        <div class="orange-bar-sm" style="margin-top: 10px">PSYCHOMOTOR ATTRIBUTES</div>
+                        <table class="attr-table">
+                            <tbody id="psychomotor-body"></tbody>
+                        </table>
+
+                        <!-- KEYS -->
+                        <div class="keys-table-wrapper">
+                            <div class="orange-bar-sm">KEYS TO RATING</div>
+                            <table class="keys-table">
+                                <tr>
+                                    <td>75-100</td>
+                                    <td>A1</td>
+                                </tr>
+                                <tr>
+                                    <td>70-74</td>
+                                    <td>B2</td>
+                                </tr>
+                                <tr>
+                                    <td>65-69</td>
+                                    <td>B3</td>
+                                </tr>
+                                <tr>
+                                    <td>60-64</td>
+                                    <td>C4</td>
+                                </tr>
+                                <tr>
+                                    <td>50-59</td>
+                                    <td>C5</td>
+                                </tr>
+                                <tr>
+                                    <td>45-49</td>
+                                    <td>C6</td>
+                                </tr>
+                                <tr>
+                                    <td>40-44</td>
+                                    <td>D7</td>
+                                </tr>
+                                <tr>
+                                    <td>0-39</td>
+                                    <td>F9</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- ATTENDANCE -->
+                        <div class="orange-bar-sm" style="margin-top: 10px">ATTENDANCE</div>
+                        <table class="attendance-table">
+                            <tr>
+                                <td>No. of Times School Opened:</td>
+                                <td id="out-opens" class="val-box"></td>
+                            </tr>
+                            <tr>
+                                <td>No. of Times Present:</td>
+                                <td id="out-present" class="val-box"></td>
+                            </tr>
+                            <tr>
+                                <td>No. of Times Absent:</td>
+                                <td id="out-absent" class="val-box"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="footer-section">
+                    <div class="orange-bar-sm">COMMENTS</div>
+                    <div class="comments-grid">
+                        <div class="comment-row">
+                            <span class="cmt-label">CLASS TEACHER</span>
+                            <div class="cmt-line-group">
+                                <div class="cmt-line" id="out-teacher-cmt"></div>
+                            </div>
+                        </div>
+                        <div class="comment-row">
+                            <span class="cmt-label">PRINCIPAL</span>
+                            <div class="cmt-line-group">
+                                <div class="cmt-line" id="out-principal-cmt"></div>
+                                <div class="sign-line">
+                                    <img id="out-principal-sig" class="signature-img" src="assets/signature.png"
+                                        alt="SIGN" style="display:block">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Load Data
+        const rawResults = sessionStorage.getItem('th_parent_results');
+        const studentName = sessionStorage.getItem('th_parent_student') || 'Parent';
+        const results = rawResults ? JSON.parse(rawResults) : [];
+
+        document.getElementById('welcome-text').textContent = `Welcome, Parent of ${studentName}`;
+
+        // Render List
+        const listEl = document.getElementById('results-grid');
+        if (results.length === 0) {
+            listEl.innerHTML = '<p>No results found.</p>';
+        } else {
+            listEl.innerHTML = results.map((r, i) => `
+                <div class="result-card" onclick="loadReport(${i})">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="font-size:12px; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px;">${r.session}</span>
+                        <span style="font-size:12px; color:#6b7280;">${new Date(r.timestamp).toLocaleDateString()}</span>
+                    </div>
+                    <div class="result-title" style="margin-top:10px;">${r.term}</div>
+                    <div class="result-meta">Class: ${r.data.bio.class}</div>
+                </div>
+            `).join('');
+        }
+
+        window.showList = function () {
+            document.getElementById('report-view').style.display = 'none';
+            document.getElementById('list-view').style.display = 'block';
+        }
+
+        window.loadReport = function (index) {
+            const report = results[index];
+            if (!report) return;
+
+            // map data
+            const d = report.data;
+            const bio = d.bio;
+            const att = d.attendance;
+
+            // Map IDs
+            const map = {
+                'out-name': bio.name,
+                'out-class': bio.class,
+                'out-term': bio.term,
+                'out-session': bio.session,
+                'out-roll': bio.roll,
+                'out-adm-no': bio['adm-no'],
+                'out-next-term': bio['next-term'],
+                'out-age': bio.age,
+                'out-sex': bio.sex,
+                'out-opens': att['days-open'],
+                'out-present': att['days-present'],
+                'out-teacher-cmt': d.comments?.teacher,
+                'out-principal-cmt': d.comments?.principal
+            };
+
+            for (const [id, val] of Object.entries(map)) {
+                const el = document.getElementById(id);
+                if (el) el.textContent = (val || '').toUpperCase();
+            }
+
+            // Absent
+            const abs = (parseInt(att['days-open']) || 0) - (parseInt(att['days-present']) || 0);
+            document.getElementById('out-absent').textContent = abs > 0 ? abs : 0;
+
+            // Render Subjects
+            const tbody = document.getElementById('academic-body');
+            tbody.innerHTML = '';
+            let totalScore = 0;
+            let subCount = 0;
+
+            (d.subjects || []).forEach((sub, i) => {
+                const ca = parseFloat(sub.ca) || 0;
+                const ex = parseFloat(sub.exam) || 0;
+                const tot = ca + ex;
+                totalScore += tot;
+                subCount++;
+
+                // Grade
+                let grade = 'F', remark = 'FAIL';
+                if (tot >= 75) { grade = 'A'; remark = 'DISTINCTION'; }
+                else if (tot >= 65) { grade = 'B'; remark = 'VERY GOOD'; }
+                else if (tot >= 50) { grade = 'C'; remark = 'CREDIT'; }
+                else if (tot >= 40) { grade = 'D'; remark = 'PASS'; }
+                else { grade = 'F'; remark = 'FAIL'; } // Simplified
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td style="text-align:left; font-weight:bold;">${sub.name.toUpperCase()}</td>
+                    <td>${ca || '-'}</td>
+                    <td>${ex || '-'}</td>
+                    <td><b>${tot}</b></td>
+                    <td style="color:${grade === 'F' ? 'red' : 'black'}">${grade}</td>
+                    <td>${remark}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Totals
+            document.getElementById('out-total').textContent = totalScore.toFixed(1);
+            document.getElementById('out-avg').textContent = subCount ? (totalScore / subCount).toFixed(2) : '0.00';
+            // Percentage? (Total / (Count*100)) * 100 = Avg
+            document.getElementById('out-percentage').textContent = subCount ? (totalScore / subCount).toFixed(2) + '%' : '-';
+
+            // Position
+            if (d.position) document.getElementById('out-position').textContent = d.position;
+
+            // Traits
+            renderTrait('affective-body', d.traits, 'aff');
+            renderTrait('psychomotor-body', d.traits, 'psy');
+
+            // Chart
+            const chartDiv = document.getElementById('chart-container');
+            if (chartDiv) {
+                chartDiv.innerHTML = '';
+                chartDiv.style.display = 'flex';
+                chartDiv.style.alignItems = 'flex-end';
+                chartDiv.style.height = '140px';
+                chartDiv.style.gap = '4px';
+                chartDiv.style.paddingBottom = '20px'; // space for labels
+
+                (d.subjects || []).forEach(sub => {
+                    const ca = parseFloat(sub.ca) || 0;
+                    const ex = parseFloat(sub.exam) || 0;
+                    const tot = Math.min(ca + ex, 100); // Cap at 100
+
+                    const barWrapper = document.createElement('div');
+                    barWrapper.style.flex = '1';
+                    barWrapper.style.height = '100%';
+                    barWrapper.style.display = 'flex';
+                    barWrapper.style.flexDirection = 'column';
+                    barWrapper.style.justifyContent = 'flex-end';
+                    barWrapper.style.alignItems = 'center';
+
+                    const bar = document.createElement('div');
+                    bar.style.width = '80%';
+                    bar.style.backgroundColor = '#f97316';
+                    bar.style.height = `${tot}%`;
+                    bar.style.position = 'relative';
+
+                    const scoreLabel = document.createElement('span');
+                    scoreLabel.textContent = Math.round(tot);
+                    scoreLabel.style.position = 'absolute';
+                    scoreLabel.style.top = '-14px';
+                    scoreLabel.style.left = '0';
+                    scoreLabel.style.right = '0';
+                    scoreLabel.style.textAlign = 'center';
+                    scoreLabel.style.fontSize = '9px';
+
+                    const nameLabel = document.createElement('span');
+                    nameLabel.textContent = sub.name.substring(0, 3).toUpperCase();
+                    nameLabel.style.position = 'absolute';
+                    nameLabel.style.bottom = '-16px';
+                    nameLabel.style.left = '-5px';
+                    nameLabel.style.right = '-5px';
+                    nameLabel.style.textAlign = 'center';
+                    nameLabel.style.fontSize = '8px';
+                    nameLabel.style.whiteSpace = 'nowrap';
+
+                    bar.appendChild(scoreLabel);
+                    bar.appendChild(nameLabel);
+                    barWrapper.appendChild(bar);
+                    chartDiv.appendChild(barWrapper);
+                });
+            }
+
+            // Show
+            document.getElementById('list-view').style.display = 'none';
+            document.getElementById('report-view').style.display = 'block';
+            document.getElementById('view-title').textContent = `${bio.term} Report`;
+
+            // Scroll top
+            window.scrollTo(0, 0);
+        }
+
+        const AFFECTIVE_TRAITS = [
+            'PUNCTUALITY', 'CLASS ATTENDANCE', 'STUDY HABIT', 'TEAM SPIRIT',
+            'RELATIONSHIP WITH OTHERS', 'SELF CONTROL', 'NEATNESS', 'OBEDIENCE', 'AVERAGE RATING'
+        ];
+
+        const PSYCHOMOTOR_TRAITS = [
+            'ADAPTATION', 'PERCEPTION', 'INITIATIVE', 'PRECISION',
+            'NATURALIZATION', 'FLUENCY', 'AVERAGE RATING'
+        ];
+
+        function renderTrait(containerId, traitsData, prefix) {
+            const tbody = document.getElementById(containerId);
+            tbody.innerHTML = '';
+
+            const traits = prefix === 'aff' ? AFFECTIVE_TRAITS : PSYCHOMOTOR_TRAITS;
+
+            traits.forEach(trait => {
+                // Key format matches ui.js: 'aff_PUNCTUALITY'
+                const key = `${prefix}_${trait}`;
+                const val = (traitsData && traitsData[key]) ? traitsData[key] : '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align:left; padding-left:10px;">${trait}</td>
+                    <td style="text-align:center; font-weight:bold;">${val}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+
+</html>

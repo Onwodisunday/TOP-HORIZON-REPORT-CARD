@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Portal - Top Horizon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-area h1 {
+            margin: 0;
+            color: #111827;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .logo-area p {
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--theme-orange, #f97316);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: var(--theme-orange, #f97316);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 15px;
+            padding: 10px;
+            background: #fee2e2;
+            border-radius: 6px;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="logo-area">
+            <!-- Icon -->
+            <div
+                style="background:#fff7ed; width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px;">
+                <i data-lucide="graduation-cap" style="color:#f97316; width:32px; height:32px;"></i>
+            </div>
+            <h1>Student Result Portal</h1>
+            <p>Access your child's continuous assessment report.</p>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Student Name or Admission No</label>
+            <input type="text" id="inp-id" class="form-input" placeholder="e.g. John Doe or A/200">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Student's Class</label>
+            <select id="inp-class" class="form-input">
+                <option value="">Loading Classes...</option>
+            </select>
+        </div>
+
+        <button id="btn-check" class="btn-primary">Check Result</button>
+        <div id="error-msg" class="error-msg"></div>
+
+        <a href="login.html"
+            style="display:block; text-align:center; margin-top:25px; color:#9ca3af; text-decoration:none; font-size:13px;">
+            Are you a teacher? Login here
+        </a>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Populate Classes from LocalStorage
+        const classSelect = document.getElementById('inp-class');
+        const classes = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('th_reports_')) {
+                const cls = key.replace('th_reports_', '');
+                classes.push(cls);
+            }
+        }
+
+        // Remove duplicates and sort
+        const uniqueClasses = [...new Set(classes)].sort();
+
+        if (uniqueClasses.length > 0) {
+            classSelect.innerHTML = '<option value="" disabled selected>Select Class</option>' +
+                uniqueClasses.map(c => `<option value="${c}">${c.toUpperCase()}</option>`).join('');
+        } else {
+            classSelect.innerHTML = '<option value="">No classes found (Contact Admin)</option>';
+        }
+
+        document.getElementById('btn-check').addEventListener('click', () => {
+            const idInput = document.getElementById('inp-id').value.trim().toLowerCase();
+            const cls = document.getElementById('inp-class').value;
+            const msg = document.getElementById('error-msg');
+
+            msg.style.display = 'none';
+
+            if (!idInput || !cls) {
+                msg.textContent = "Please enter Student Name/ID and select Class.";
+                msg.style.display = 'block';
+                return;
+            }
+
+            // Search Logic
+            const key = `th_reports_${cls}`;
+            const raw = localStorage.getItem(key);
+
+            if (!raw) {
+                msg.textContent = "No data found for this class.";
+                msg.style.display = 'block';
+                return;
+            }
+
+            let reports = [];
+            try { reports = JSON.parse(raw); } catch (e) { }
+
+            // Fuzzy Search
+            const matches = reports.filter(r => {
+                const name = (r.name || '').toLowerCase();
+                // Check bio.adm-no if exists, else check bio.name
+                // Data structure: r.data.bio['adm-no']
+                const adm = (r.data && r.data.bio && r.data.bio['adm-no']) ? r.data.bio['adm-no'].toLowerCase() : '';
+
+                return name.includes(idInput) || (adm && adm === idInput);
+            });
+
+            if (matches.length > 0) {
+                // Sort by most recent
+                matches.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                // Save to Session Storage for parent view
+                sessionStorage.setItem('th_parent_results', JSON.stringify(matches));
+                sessionStorage.setItem('th_parent_student', matches[0].name); // Store name of best match
+
+                window.location.href = 'parent_view.html';
+            } else {
+                msg.textContent = "Student not found. Please check spelling or Admission No.";
+                msg.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -7,6 +7,29 @@ import { calculateAcademicGrade, ATTR_GRADES } from './grading.js';
 import { getCurrentUser } from './auth.js';
 
 // --- CONFIG ---
+const PRIMARY_SUBJECTS = [
+    'C.R.K', 'Verbal Reasoning', 'Civic Education', 'Moral Value', 'History',
+    'Music', 'P.V.S', 'Agricultural Science', 'Diction', 'French',
+    'Hand Writing', 'Current Affairs', 'Home Economics', 'Literature',
+    'Mathematics', 'Basic Science', 'Social Studies', 'Quantitative Reasoning',
+    'Computer', 'English Language', 'P.H.E', 'Vocational Aptitude',
+    'Yoruba', 'Project'
+];
+
+const NURSERY_SUBJECTS = [
+    'Letter Work', 'Health Habit', 'Civic Education', 'Poems', 'Social Habit',
+    'French', 'Diction', 'Music', 'P.H.E', 'Hand Writing',
+    'Verbal Reasoning', 'Number Work', 'Basic Science', 'Quantitative Reasoning',
+    'Fine Art', 'C.R.K', 'Food and Nutrition'
+];
+
+const PREP_SUBJECTS = [
+    'Letter Work', 'Basic Science', 'Civic Education', 'Social Habit',
+    'Music', 'Diction', 'French', 'Hand Writing', 'Health Habit',
+    'Verbal Reasoning', 'Number Work', 'Food and Nutrition', 'Poems',
+    'Computer', 'Fine Art', 'C.R.K', 'Quantitative Reasoning'
+];
+
 const AFFECTIVE_TRAITS = [
     'PUNCTUALITY', 'CLASS ATTENDANCE', 'STUDY HABIT', 'TEAM SPIRIT',
     'RELATIONSHIP WITH OTHERS', 'SELF CONTROL', 'NEATNESS', 'OBEDIENCE', 'AVERAGE RATING'
@@ -29,7 +52,6 @@ const outPsychomotor = document.getElementById('psychomotor-body');
 const chartContainer = document.getElementById('chart-container');
 
 export function init() {
-    addSubjectRow();
     renderTraitInputs(affectiveContainer, AFFECTIVE_TRAITS, 'aff');
     renderTraitInputs(psychomotorContainer, PSYCHOMOTOR_TRAITS, 'psy');
 
@@ -48,7 +70,118 @@ export function init() {
     }
     loadDraft();
 
+    // Always pre-fill subjects if container is empty OR only has blank rows
+    const existingRows = subjectsContainer.querySelectorAll('.subject-row-input');
+    const hasRealSubjects = Array.from(existingRows).some(row => {
+        const nameInput = row.querySelector('.inp-sub-name');
+        return nameInput && nameInput.value.trim() !== '';
+    });
+
+    if (!hasRealSubjects) {
+        const user = getCurrentUser();
+        if (user) {
+            // Check for Primary 1-5
+            if (/^(primary|basic|year|grade|p)\.?\s*[1-5]/i.test(user.class)) {
+                subjectsContainer.innerHTML = '';
+                PRIMARY_SUBJECTS.forEach(sub => addSubjectRow(sub));
+            }
+            // Check for Prep 1-2
+            else if (/^(prep)\.?\s*[1-2]/i.test(user.class)) {
+                subjectsContainer.innerHTML = '';
+                PREP_SUBJECTS.forEach(sub => addSubjectRow(sub));
+            }
+            // Check for Nursery / Pre-Nursery if NOT Prep
+            else if (/^(nursery|pre-nursery|n)\.?\s*[1-3]?/i.test(user.class) || /^(kg|kindergarten)/i.test(user.class)) {
+                subjectsContainer.innerHTML = '';
+                NURSERY_SUBJECTS.forEach(sub => addSubjectRow(sub));
+            }
+            else if (subjectsContainer.children.length === 0) {
+                addSubjectRow();
+            }
+        } else if (subjectsContainer.children.length === 0) {
+            addSubjectRow();
+        }
+    }
+
     // Initial Render
+    updateReport();
+
+    // Set Default Principal Signature
+    const pSig = document.getElementById('out-principal-sig');
+    if (pSig) {
+        // Updated to match the found file
+        pSig.src = 'assets/signature.png';
+        pSig.style.display = 'block';
+        pSig.onerror = function () {
+            this.style.display = 'none';
+        };
+    }
+
+    // --- Session Setup Check ---
+    setTimeout(() => {
+        const sessionInp = document.getElementById('inp-session');
+        const termInp = document.getElementById('inp-term');
+
+        // Only run if fields are empty (i.e. not loaded from draft)
+        if (!sessionInp.value || !termInp.value) {
+            const storedConf = localStorage.getItem('th_config');
+            if (storedConf) {
+                // Auto-fill from global config
+                const c = JSON.parse(storedConf);
+                if (c.session) sessionInp.value = c.session;
+                if (c.term) termInp.value = c.term;
+                if (c.nextTerm && document.getElementById('inp-next-term')) {
+                    document.getElementById('inp-next-term').value = c.nextTerm;
+                }
+
+                // Trigger updates
+                [sessionInp, termInp, document.getElementById('inp-next-term')].forEach(el => {
+                    if (el) el.dispatchEvent(new Event('input'));
+                });
+            } else {
+                // Show Setup Modal
+                const modal = document.getElementById('setup-modal');
+                const btn = document.getElementById('btn-start-session');
+
+                if (modal && btn) {
+                    modal.classList.add('active');
+
+                    btn.addEventListener('click', () => {
+                        const s = document.getElementById('setup-session').value;
+                        const t = document.getElementById('setup-term').value;
+                        const nt = document.getElementById('setup-next-term').value;
+
+                        if (s && t) {
+                            // Save Global Config
+                            const newConf = { session: s, term: t, nextTerm: nt };
+                            localStorage.setItem('th_config', JSON.stringify(newConf));
+
+                            // Apply locally
+                            sessionInp.value = s;
+                            termInp.value = t;
+                            const ntInp = document.getElementById('inp-next-term');
+                            if (ntInp) ntInp.value = nt;
+
+                            // Trigger updates
+                            [sessionInp, termInp, ntInp].forEach(el => {
+                                if (el) el.dispatchEvent(new Event('input'));
+                            });
+
+                            modal.classList.remove('active');
+                        } else {
+                            alert("Please enter Current Session and Term to continue.");
+                        }
+                    });
+                }
+            }
+        }
+    }, 500); // Slight delay to ensure draft load is finished
+}
+
+// --- POPULATE SUBJECTS (can be called from button) ---
+export function populateSubjects() {
+    subjectsContainer.innerHTML = '';
+    PRIMARY_SUBJECTS.forEach(sub => addSubjectRow(sub));
     updateReport();
 }
 
@@ -70,17 +203,19 @@ function renderTraitInputs(container, traits, prefix) {
 }
 
 // --- SUBJECT MANAGEMENT ---
-export function addSubjectRow() {
+export function addSubjectRow(defaultName = '') {
     const row = document.createElement('div');
     row.className = 'subject-row-input';
+    const isPreFilled = defaultName !== '';
+
     row.innerHTML = `
-        <input type="text" class="inp-sub-name" placeholder="Subject Name">
+        <input type="text" class="inp-sub-name" placeholder="Subject Name" value="${defaultName}" 
+               ${isPreFilled ? 'readonly style="background-color:#f9fafb; cursor:default; font-weight:500;"' : ''}>
         <input type="number" class="inp-sub-ca" placeholder="CA" min="0" max="40">
         <input type="number" class="inp-sub-exam" placeholder="Ex" min="0" max="60">
         <button class="btn-danger remove-btn" title="Remove">x</button>
     `;
 
-    // Listeners
     // Listeners with Validation
     row.querySelectorAll('input').forEach(i => {
         i.addEventListener('input', (e) => {
@@ -106,10 +241,19 @@ export function addSubjectRow() {
 
 // --- DATA LISTENING ---
 function setupBioListeners() {
-    const ids = ['name', 'class', 'roll', 'term', 'session', 'next-term', 'age', 'sex'];
+    const ids = ['name', 'class', 'roll', 'term', 'session', 'next-term', 'age', 'sex', 'adm-no'];
     ids.forEach(id => {
         document.getElementById(`inp-${id}`).addEventListener('input', (e) => {
             document.getElementById(`out-${id}`).textContent = e.target.value.toUpperCase();
+
+            // Update Page Title for PDF Filename
+            if (id === 'name' || id === 'class') {
+                const n = document.getElementById('inp-name').value;
+                const c = document.getElementById('inp-class').value;
+                if (n || c) {
+                    document.title = `Report - ${n || ''} - ${c || ''}`.trim();
+                }
+            }
         });
     });
 }
@@ -118,13 +262,22 @@ function setupAttendanceListeners() {
     const ids = ['days-open', 'days-present'];
     ids.forEach(id => {
         document.getElementById(`inp-${id}`).addEventListener('input', (e) => {
-            // Update Open/Present
-            document.getElementById(id.replace('inp-', 'out-').replace('days-', '')).textContent = e.target.value;
+            // Map IDs correctly
+            let outId;
+            if (id === 'days-open') outId = 'out-opens'; // matches HTML id="out-opens"
+            if (id === 'days-present') outId = 'out-present'; // matches HTML id="out-present"
+
+            if (outId) {
+                const el = document.getElementById(outId);
+                if (el) el.textContent = e.target.value;
+            }
 
             // Calc Absent
             const open = parseInt(document.getElementById('inp-days-open').value) || 0;
             const present = parseInt(document.getElementById('inp-days-present').value) || 0;
-            document.getElementById('out-absent').textContent = (open - present > 0) ? (open - present) : 0;
+            // Absent = Open - Present
+            const absent = (open - present > 0) ? (open - present) : 0;
+            document.getElementById('out-absent').textContent = absent;
         });
     });
 }
@@ -179,6 +332,13 @@ function setupCommentListeners() {
 
 // --- RENDER LOGIC ---
 function updateReport() {
+    // Update Document Title for PDF Filename
+    const n = document.getElementById('inp-name').value;
+    const c = document.getElementById('inp-class').value;
+    if (n || c) {
+        document.title = `Report - ${n || ''} - ${c || ''}`.trim();
+    }
+
     // 1. Process Academics
     const rows = document.querySelectorAll('.subject-row-input');
     const subjects = [];
@@ -252,7 +412,7 @@ function renderTraitOutput(tableBody, type) {
 
 function renderChart(subjects) {
     chartContainer.innerHTML = '';
-    // Limit to first 6 subjects to fit chart
+    // Limit to first 8 subjects to fit chart
     subjects.slice(0, 8).forEach(sub => {
         const height = sub.total; // 0-100
         const bar = document.createElement('div');
@@ -400,7 +560,7 @@ function getFormData() {
     };
 
     // Bio
-    ['name', 'class', 'roll', 'term', 'session', 'next-term', 'age', 'sex'].forEach(id => {
+    ['name', 'class', 'roll', 'term', 'session', 'next-term', 'age', 'sex', 'adm-no'].forEach(id => {
         data.bio[id] = document.getElementById(`inp-${id}`)?.value || '';
     });
 
@@ -491,10 +651,9 @@ function loadDataIntoForm(data) {
             container.innerHTML = ''; // Clear default
 
             data.subjects.forEach(sub => {
-                addSubjectRow(); // Adds to DOM
+                addSubjectRow(sub.name || ''); // Pass saved name
                 const rows = document.querySelectorAll('.subject-row-input');
                 const row = rows[rows.length - 1];
-                row.querySelector('.inp-sub-name').value = sub.name;
                 row.querySelector('.inp-sub-ca').value = sub.ca;
                 row.querySelector('.inp-sub-exam').value = sub.exam;
             });

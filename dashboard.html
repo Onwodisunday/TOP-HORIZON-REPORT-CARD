@@ -11,6 +11,22 @@
             background: #f0f2f5;
             font-family: 'Roboto', sans-serif;
             padding: 20px;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("assets/logo.png") no-repeat center center;
+            background-size: 50%;
+            opacity: 0.08;
+            z-index: -1;
+            pointer-events: none;
         }
 
         .dashboard-container {
@@ -86,17 +102,55 @@
         </div>
 
         <div class="cards-grid">
-            <a href="report.html?new=true" class="action-card">
+            <div class="action-card" id="btn-open-setup">
+                <span class="card-icon">⚙️</span>
+                <span class="card-title">Create Section & Term</span>
+                <p style="color:#666; margin-top:10px;">Setup the academic session and term before creating reports.</p>
+            </div>
+
+            <div onclick="handleCreateReport()" class="action-card">
                 <span class="card-icon">📄</span>
                 <span class="card-title">Create New Report</span>
                 <p style="color:#666; margin-top:10px;">Generate a new continuous assessment report for a student.</p>
-            </a>
+            </div>
 
             <a href="saved_reports.html" class="action-card">
                 <span class="card-icon">📂</span>
                 <span class="card-title">Saved Reports</span>
                 <p style="color:#666; margin-top:10px;">View and edit previously saved reports.</p>
             </a>
+        </div>
+
+        <!-- Recent Sections -->
+        <div class="sections-container" style="margin-top:40px; border-top:1px solid #e5e7eb; padding-top:20px;">
+            <h2 style="color:#374151; font-size:18px; margin-bottom:15px; font-weight:600;">Your Created Sections</h2>
+            <div id="sections-list" style="color:#6b7280; font-style:italic;">
+                No saved reports yet. Create a report to see sections here.
+            </div>
+        </div>
+    </div>
+
+    <!-- SETUP MODAL (Reused styles) -->
+    <div id="setup-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Academic Session Config</h3>
+            <p style="color:#666; margin-bottom:20px;">Please set the session details for your reports.</p>
+
+            <label>Current Session (Year)</label>
+            <input type="text" id="setup-session" placeholder="e.g. 2024/2025">
+
+            <label>Current Term</label>
+            <select id="setup-term">
+                <option value="First Term">First Term</option>
+                <option value="Second Term">Second Term</option>
+                <option value="Third Term">Third Term</option>
+            </select>
+
+            <label>Next Term Begins</label>
+            <input type="date" id="setup-next-term">
+
+            <button id="btn-save-session">Save Session</button>
+            <button id="btn-cancel-session" style="background:#ccc; color: #333; margin-top:10px;">Cancel</button>
         </div>
     </div>
 
@@ -106,9 +160,96 @@
         const user = checkSession();
         if (user) {
             document.getElementById('welcome-msg').textContent = `Welcome, ${user.class} Teacher`;
+
+            // Render Sections Grouped by Session
+            const rawRep = localStorage.getItem(`th_reports_${user.class}`);
+            if (rawRep) {
+                try {
+                    const reports = JSON.parse(rawRep);
+                    // Group by Session -> Term
+                    const sessionGroups = {};
+
+                    reports.forEach(r => {
+                        const sess = r.session || 'Unknown Session';
+                        const term = r.term || 'Unknown Term';
+
+                        if (!sessionGroups[sess]) sessionGroups[sess] = { terms: {}, totalCount: 0, lastEdit: 0 };
+
+                        // Update Session totals
+                        sessionGroups[sess].totalCount++;
+                        const time = new Date(r.timestamp).getTime();
+                        if (time > sessionGroups[sess].lastEdit) sessionGroups[sess].lastEdit = time;
+
+                        // Update Term specific stats
+                        if (!sessionGroups[sess].terms[term]) sessionGroups[sess].terms[term] = 0;
+                        sessionGroups[sess].terms[term]++;
+                    });
+
+                    const sessionKeys = Object.keys(sessionGroups);
+                    const list = document.getElementById('sections-list');
+
+                    if (sessionKeys.length > 0 && list) {
+                        list.innerHTML = '';
+                        list.style.display = 'grid';
+                        list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
+                        list.style.gap = '15px';
+                        list.style.fontStyle = 'normal';
+
+                        // Sort Sessions by most recent activity
+                        sessionKeys.sort((a, b) => sessionGroups[b].lastEdit - sessionGroups[a].lastEdit);
+
+                        sessionKeys.forEach(sess => {
+                            const data = sessionGroups[sess];
+                            const termKeys = ["First Term", "Second Term", "Third Term"]; // Fixed order
+                            // Or use dynamic keys if custom terms exist
+
+                            const details = document.createElement('details');
+                            details.style.background = 'white';
+                            details.style.borderRadius = '8px';
+                            details.style.border = '1px solid #e5e7eb';
+                            details.style.overflow = 'hidden';
+                            details.style.boxShadow = '0 2px 5px rgba(0,0,0,0.05)';
+                            details.style.transition = 'all 0.2s';
+
+                            // Summary (The Session Card)
+                            details.innerHTML = `
+                                <summary style="padding:15px; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; outline:none;">
+                                    <div>
+                                        <div style="font-weight:bold; font-size:16px; color:#374151;">${sess}</div>
+                                        <div style="font-size:12px; color:#9ca3af; margin-top:4px;">Updated ${new Date(data.lastEdit).toLocaleDateString()}</div>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="background:#f3f4f6; color:#6b7280; font-size:11px; padding:2px 6px; border-radius:4px;">${data.totalCount}</span>
+                                        <span style="font-size:10px; color:#999;">▼</span>
+                                    </div>
+                                </summary>
+                                <div style="border-top:1px solid #f3f4f6; background:#f9fafb;">
+                                    ${Object.keys(data.terms).sort().map(term => {
+                                const count = data.terms[term];
+                                return `
+                                        <a href="saved_reports.html?s=${encodeURIComponent(sess)}&t=${encodeURIComponent(term)}" 
+                                           style="display:flex; justify-content:space-between; padding:10px 15px; text-decoration:none; color:#4b5563; font-size:14px; border-bottom:1px solid #f3f4f6; transition:background 0.2s;">
+                                           <span>${term}</span>
+                                           <span style="font-weight:bold; color:#6b7280; font-size:12px;">${count}</span>
+                                        </a>`;
+                            }).join('')}
+                                </div>
+                            `;
+
+                            // Add hover effect to links via JS or simple style
+                            // Using event delegation or just inline style with :hover simulation isn't easy with template strings.
+                            // I'll leave basic style.
+
+                            // Close other details when one opens? Optional.
+
+                            list.appendChild(details);
+                        });
+                    }
+                } catch (e) { console.error(e); }
+            }
         } else {
             // Should be handled by checkSession redirect, but safe guard
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
         }
 
         document.getElementById('logout-btn').addEventListener('click', () => {
@@ -116,6 +257,64 @@
                 logout();
             }
         });
+
+        // Use same simple logic for modal
+        const setupBtn = document.getElementById('btn-open-setup');
+        const setupModal = document.getElementById('setup-modal');
+        const saveBtn = document.getElementById('btn-save-session');
+        const cancelBtn = document.getElementById('btn-cancel-session');
+
+        if (setupBtn && setupModal) {
+            setupBtn.addEventListener('click', () => {
+                // Pre-fill
+                const conf = localStorage.getItem('th_config');
+                if (conf) {
+                    const c = JSON.parse(conf);
+                    if (c.session) document.getElementById('setup-session').value = c.session;
+                    if (c.term) document.getElementById('setup-term').value = c.term;
+                    if (c.nextTerm) document.getElementById('setup-next-term').value = c.nextTerm;
+                }
+                setupModal.classList.add('active');
+            });
+
+            if (saveBtn) {
+                saveBtn.addEventListener('click', () => {
+                    const s = document.getElementById('setup-session').value;
+                    const t = document.getElementById('setup-term').value;
+                    const nt = document.getElementById('setup-next-term').value;
+                    if (s && t) {
+                        localStorage.setItem('th_config', JSON.stringify({ session: s, term: t, nextTerm: nt }));
+                        setupModal.classList.remove('active');
+                        alert('Session settings saved!');
+                    } else {
+                        alert('Please enter Session and Term');
+                    }
+                });
+            }
+
+            cancelBtn.addEventListener('click', () => {
+                setupModal.classList.remove('active');
+            });
+        }
+
+        window.handleCreateReport = function () {
+            const conf = localStorage.getItem('th_config');
+            let hasConfig = false;
+            try {
+                if (conf) {
+                    const c = JSON.parse(conf);
+                    if (c.session && c.term) hasConfig = true;
+                }
+            } catch (e) { }
+
+            if (hasConfig) {
+                window.location.href = 'report.html?new=true';
+            } else {
+                alert("Please create a Section & Term first before generating reports.");
+                const btn = document.getElementById('btn-open-setup');
+                if (btn) btn.click();
+            }
+        }
     </script>
 </body>
 

@@ -4,193 +4,443 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Top Horizon</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Top Horizon Nursery and Primary School</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
-            background: #f0f2f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
+        :root {
+            --theme-orange: #f97316;
+            --theme-dark: #1f2937;
+            --theme-light: #f3f4f6;
         }
 
-        .login-card {
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f9fafb;
+            color: #333;
+        }
+
+        /* Navbar */
+        header {
             background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-area img {
+            height: 40px;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--theme-dark);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--theme-orange);
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            padding: 80px 20px;
             text-align: center;
         }
 
-        .login-logo {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 20px;
-            object-fit: contain;
-        }
-
-        .login-title {
+        .hero h1 {
+            font-size: 3rem;
+            margin: 0 0 10px;
             color: var(--theme-dark);
-            margin-bottom: 30px;
-            font-size: 24px;
-            font-weight: bold;
+            font-weight: 800;
         }
 
-        .form-group {
+        .hero p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .motto {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--theme-orange);
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
             margin-bottom: 20px;
-            text-align: left;
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
+        /* Portals Section */
+        .portals {
+            max-width: 1000px;
+            margin: -40px auto 40px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
         }
 
-        select,
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            box-sizing: border-box;
-            /* Fix padding issue */
+        .portal-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #eee;
         }
 
-        .btn-login {
-            width: 100%;
-            padding: 12px;
-            background: var(--theme-orange);
+        .portal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--theme-orange);
+        }
+
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            background: #fff7ed;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .portal-card h2 {
+            margin: 0 0 10px;
+            color: var(--theme-dark);
+        }
+
+        .portal-card p {
+            color: #888;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--theme-dark);
             color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.2s;
         }
 
-        .btn-login:hover {
+        .btn-primary {
+            background: var(--theme-orange);
+        }
+
+        .btn:hover {
             opacity: 0.9;
         }
 
-        .error-msg {
-            color: red;
-            margin-top: 15px;
+        /* Features/About */
+        .section {
+            padding: 60px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            color: var(--theme-dark);
+            margin-bottom: 10px;
+        }
+
+        .section-title p {
+            color: #666;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature {
+            display: flex;
+            gap: 15px;
+        }
+
+        .feature-icon {
+            color: var(--theme-orange);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--theme-dark);
+            color: white;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-col h4 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--theme-orange);
+        }
+
+        .footer-col p {
+            color: #9ca3af;
+            line-height: 1.6;
+            margin: 0 0 10px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid #374151;
+            padding-top: 20px;
+            margin-top: 40px;
+            color: #6b7280;
             font-size: 14px;
-            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            /* Simplified mobile nav */
         }
     </style>
 </head>
 
 <body>
 
-    <div class="login-card">
-        <img src="assets/logo.png"
-            onerror="this.src='assets/logo.jpeg'; this.onerror=function(){this.src='assets/logo.jpg'; this.onerror=function(){this.src='assets/logo.svg'}}"
-            alt="Top Horizon Logo" class="login-logo">
+    <!-- Header -->
+    <header>
+        <div class="logo-area">
+            <img src="assets/logo.png" alt="Logo"
+                onerror="this.onerror=null; this.src='https://via.placeholder.com/50?text=TH'">
+            <div class="logo-text">TOP HORIZON</div>
+        </div>
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#about">About</a>
+            <a href="#admission">Admission</a>
+            <a href="#portals">Portals</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <!-- Mobile Menu Button (Hidden on Desktop) -->
+        <button id="menu-btn" style="display:none; background:none; border:none; cursor:pointer;"
+            onclick="document.querySelector('.nav-links').style.display = document.querySelector('.nav-links').style.display==='flex'?'none':'flex'">
+            <i data-lucide="menu"></i>
+        </button>
+    </header>
 
-        <div class="login-title" id="form-title">Teacher Login</div>
-
-        <form id="auth-form">
-            <div class="form-group">
-                <label>Select Class</label>
-                <select id="class-select" required>
-                    <option value="">-- Choose Class --</option>
-                    <option value="Prep 1">Prep 1</option>
-                    <option value="Prep 2">Prep 2</option>
-                    <option value="Nursery 1">Nursery 1</option>
-                    <option value="Nursery 2">Nursery 2</option>
-                    <option value="Primary 1">Primary 1</option>
-                    <option value="Primary 2">Primary 2</option>
-                    <option value="Primary 3">Primary 3</option>
-                    <option value="Primary 4">Primary 4</option>
-                    <option value="Primary 5">Primary 5</option>
-                </select>
+    <!-- Hero -->
+    <section class="hero"
+        style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; max-width:1100px; margin:0 auto; text-align:left;">
+        <div style="flex:1; min-width:300px; padding-right:40px;">
+            <div class="motto">KNOWLEDGE AND COURAGE</div>
+            <h1>Welcome to <br><span style="color:var(--theme-orange)">Top Horizon</span></h1>
+            <p style="font-size:1.1rem; line-height:1.6;">Nurturing the leaders of tomorrow with excellence, integrity,
+                and a commitment to lifelong learning in a safe and supportive environment.</p>
+            <div style="display:flex; gap:15px; margin-top:30px;">
+                <a href="#portals" class="btn btn-primary">Portal Access</a>
+                <a href="#about" class="btn" style="background:#e5e7eb; color:#374151;">Learn More</a>
             </div>
+        </div>
+        <div style="flex:1; min-width:300px; display:flex; justify-content:center; margin-top:40px;">
+            <img src="assets/logo.png"
+                style="max-width:80%; height:auto; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.1));"
+                alt="School Hero Image">
+        </div>
+    </section>
 
-            <div class="form-group">
-                <label>Access Pin</label>
-                <input type="password" id="pin-input" placeholder="Enter PIN" required>
+    <!-- Portals -->
+    <section class="portals" id="portals">
+        <!-- Parent Portal -->
+        <div class="portal-card">
+            <div class="icon-box">
+                <i data-lucide="graduation-cap" style="width:40px; height:40px; color:#f97316;"></i>
             </div>
+            <h2>Check Result</h2>
+            <p>Access termly reports, attendance records, and academic progress for your child.</p>
+            <a href="parent.html" class="btn btn-primary">Open Parent Portal</a>
+        </div>
 
-            <button type="submit" class="btn-login" id="submit-btn" style="margin-bottom:10px;">Login</button>
-            <div style="text-align:center; font-size:14px;">
-                <a href="#" id="toggle-mode" style="color:var(--theme-orange); text-decoration:none;">Create/Set New
-                    PIN</a>
+        <!-- Teacher Portal -->
+        <div class="portal-card">
+            <div class="icon-box">
+                <i data-lucide="users" style="width:40px; height:40px; color:#1f2937;"></i>
             </div>
-            <div class="error-msg" id="error-msg">Invalid Class or PIN</div>
-            <div class="error-msg" id="success-msg" style="color:green; display:none;">PIN Set Successfully! Please
-                Login.</div>
-        </form>
-    </div>
+            <h2>Teacher Login</h2>
+            <p>Authorized staff portal for managing student records, uploading results, and assessment.</p>
+            <a href="login.html" class="btn">Login to Dashboard</a>
+        </div>
+    </section>
 
-    <script type="module">
-        import { login, register } from './js/modules/auth.js';
+    <!-- Admission Banner -->
+    <section id="admission"
+        style="background:var(--theme-dark); color:white; padding:60px 20px; text-align:center; margin-top:60px;">
+        <div style="max-width:800px; margin:0 auto;">
+            <h2 style="color:white; font-size:2rem; margin-bottom:20px;">Admission is Open!</h2>
+            <p style="color:#d1d5db; margin-bottom:30px; font-size:1.1rem;">Enroll your child today for the upcoming
+                academic session. Provide them with the best foundation for a bright future.</p>
+            <button class="btn btn-primary" onclick="alert('Please visit the school office to pick up a form.')">Apply
+                Now</button>
+        </div>
+    </section>
 
-        const form = document.getElementById('auth-form');
-        const title = document.getElementById('form-title');
-        const submitBtn = document.getElementById('submit-btn');
-        const toggleBtn = document.getElementById('toggle-mode');
-        const errorMsg = document.getElementById('error-msg');
-        const successMsg = document.getElementById('success-msg');
+    <!-- About / Features -->
+    <section class="section" id="about">
+        <div class="section-title">
+            <h2>Why Choose Top Horizon?</h2>
+            <p>We provide a comprehensive educational experience tailored to every child's needs.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon"><i data-lucide="book-open"></i></div>
+                <div>
+                    <h3>Quality Education</h3>
+                    <p style="color:#666;">Our curriculum is designed to challenge and inspire students at every level.
+                    </p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i data-lucide="heart"></i></div>
+                <div>
+                    <h3>Character Building</h3>
+                    <p style="color:#666;">We focus on moral values, discipline, and social responsibility.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i data-lucide="monitor"></i></div>
+                <div>
+                    <h3>Modern Facilities</h3>
+                    <p style="color:#666;">Equipped with computer labs and learning aids to support digital literacy.
+                    </p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i data-lucide="music"></i></div>
+                <div>
+                    <h3>Extracurriculars</h3>
+                    <p style="color:#666;">Music, sports, and arts programs to develop well-rounded individuals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        let isLoginMode = true;
+    <!-- Anthem -->
+    <section style="background:#fff7ed; padding:60px 20px; text-align:center;">
+        <div style="max-width:600px; margin:0 auto;">
+            <i data-lucide="music" style="width:30px; height:30px; color:var(--theme-orange); margin-bottom:15px;"></i>
+            <h2 style="color:var(--theme-dark); margin-bottom:20px;">School Anthem</h2>
+            <p style="font-style:italic; line-height:1.8; color:#555;">
+                "Top Horizon, shining bright,<br>
+                Guiding us with wisdom's light.<br>
+                Leaders of tomorrow we shall be,<br>
+                With courage, faith, and honesty."
+            </p>
+        </div>
+    </section>
 
-        toggleBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            isLoginMode = !isLoginMode;
-            if (isLoginMode) {
-                title.textContent = "Teacher Login";
-                submitBtn.textContent = "Login";
-                toggleBtn.textContent = "Create/Set New PIN";
-                errorMsg.style.display = 'none';
-                successMsg.style.display = 'none';
-            } else {
-                title.textContent = "Set Class PIN";
-                submitBtn.textContent = "Set PIN";
-                toggleBtn.textContent = "Back to Login";
-                errorMsg.style.display = 'none';
-                successMsg.style.display = 'none';
-            }
-        });
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <p>70 AILEGUN RD<br>EJIGBO, LAGOS</p>
+                <p>Phone: 08033441520</p>
+                <p>Email: info@tophorizon.edu.ng</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <p><a href="parent.html" style="color:#bdc3c7; text-decoration:none;">Check Result</a></p>
+                <p><a href="login.html" style="color:#bdc3c7; text-decoration:none;">Staff Login</a></p>
+                <p><a href="#admission" style="color:#bdc3c7; text-decoration:none;">Admission</a></p>
+            </div>
+            <div class="footer-col">
+                <h4>Opening Hours</h4>
+                <p>Mon - Fri: 7:30 AM - 4:00 PM</p>
+                <p>Sat - Sun: Closed</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Top Horizon Nursery and Primary School. All Rights Reserved.
+        </div>
+    </footer>
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const classId = document.getElementById('class-select').value;
-            const pin = document.getElementById('pin-input').value;
+    <script>
+        lucide.createIcons();
 
-            if (classId === "") {
-                alert("Please select a class");
-                return;
-            }
-
-            if (isLoginMode) {
-                if (login(classId, pin)) {
-                    window.location.href = 'dashboard.html';
-                } else {
-                    errorMsg.textContent = "Invalid PIN for " + classId;
-                    errorMsg.style.display = 'block';
+        // Simple scroll reveal
+        document.addEventListener('scroll', () => {
+            const portals = document.querySelector('.portals');
+            if (portals) {
+                const top = portals.getBoundingClientRect().top;
+                if (top < window.innerHeight - 100) {
+                    portals.style.opacity = '1';
+                    portals.style.transform = 'translateY(0)';
                 }
-            } else {
-                // Register Mode
-                register(classId, pin);
-                successMsg.style.display = 'block';
-                setTimeout(() => {
-                    // Switch back to login after 1.5s
-                    toggleBtn.click();
-                }, 1500);
             }
         });
-    </script>
 
+        // Mobile Menu Logic
+        const menuBtn = document.getElementById('menu-btn');
+        if (window.innerWidth < 768) {
+            menuBtn.style.display = 'block';
+            document.querySelector('.nav-links').style.display = 'none';
+            document.querySelector('.nav-links').style.flexDirection = 'column';
+            document.querySelector('.nav-links').style.position = 'absolute';
+            document.querySelector('.nav-links').style.top = '60px';
+            document.querySelector('.nav-links').style.left = '0';
+            document.querySelector('.nav-links').style.width = '100%';
+            document.querySelector('.nav-links').style.background = 'white';
+            document.querySelector('.nav-links').style.padding = '20px';
+            document.querySelector('.nav-links').style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)';
+        }
+    </script>
 </body>
 
 </html>
