@@ -16,9 +16,13 @@
     <!-- Header / Navigation -->
     <header>
         <div class="logo">
-            <img src="assets/logo.png" alt="Top Horizon Logo" onerror="this.style.display='none'">
-            <span>Top Horizon School</span>
+            <img src="assets/logo.png" alt="Logo"
+                onerror="this.onerror=null; this.src='https://via.placeholder.com/50?text=TH'">
+            <span>Top Horizon</span>
         </div>
+        <button class="mobile-menu-btn" onclick="document.querySelector('.nav-menu').classList.toggle('active')">
+            <i data-lucide="menu"></i>
+        </button>
         <nav class="nav-menu">
             <a href="index.html" class="nav-link active">Home</a>
             <a href="about.html" class="nav-link">About Us</a>
