@@ -109,8 +109,11 @@
 </head>
 
 <body>
-
-    <div class="login-card">
+    <a href="index.html"
+        style="position:absolute; top:20px; left:20px; text-decoration:none; color:var(--theme-orange); font-weight:bold; display:flex; align-items:center; gap:5px;">
+        <i data-lucide="arrow-left"></i> Back to Website
+    </a>
+    <div class="login-container">
         <img src="assets/logo.png"
             onerror="this.src='assets/logo.jpeg'; this.onerror=function(){this.src='assets/logo.jpg'; this.onerror=function(){this.src='assets/logo.svg'}}"
             alt="Top Horizon Logo" class="login-logo">
@@ -148,8 +151,12 @@
             <div class="error-msg" id="success-msg" style="color:green; display:none;">PIN Set Successfully! Please
                 Login.</div>
             <div style="text-align:center; margin-top:20px; padding-top:10px; border-top:1px solid #f3f4f6;">
-                <a href="parent.html" style="text-decoration:none; color:#f97316; font-weight:bold; font-size:14px;">🎓
+                <a href="parent.html"
+                    style="text-decoration:none; color:var(--theme-orange); font-weight:bold; font-size:14px;">🎓
                     Check Student Result (Parent Portal)</a>
+                <div style="margin-top:10px;">
+                    <a href="admin.html" style="text-decoration:none; color:#ccc; font-size:11px;">Admin Access</a>
+                </div>
             </div>
         </form>
     </div>

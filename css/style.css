@@ -1,11 +1,13 @@
 :root {
-    --theme-orange: #5d3fd3;
-    /* Blueish Purple */
+    --theme-orange: #7c3aed;
+    /* Updated Purple Theme */
     --theme-dark: #4c1d95;
+    /* Deep Purple */
     --border-color: #000;
     --text-color: #000;
     --surface: #fff;
-    --bg-app: #f4f4f4;
+    --bg-app: #f5f3ff;
+    /* Light Purple Tint */
 }
 
 * {

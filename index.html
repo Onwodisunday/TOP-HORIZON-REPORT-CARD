@@ -4,442 +4,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Horizon Nursery and Primary School</title>
+    <title>Top Horizon Nursery & Primary School - Home</title>
+    <link rel="stylesheet" href="css/website.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        :root {
-            --theme-orange: #f97316;
-            --theme-dark: #1f2937;
-            --theme-light: #f3f4f6;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f9fafb;
-            color: #333;
-        }
-
-        /* Navbar */
-        header {
-            background: white;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-area img {
-            height: 40px;
-        }
-
-        .logo-text {
-            font-weight: bold;
-            font-size: 18px;
-            color: var(--theme-dark);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #666;
-            font-weight: 500;
-            font-size: 14px;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--theme-orange);
-        }
-
-        /* Hero */
-        .hero {
-            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
-            padding: 80px 20px;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin: 0 0 10px;
-            color: var(--theme-dark);
-            font-weight: 800;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto 30px;
-        }
-
-        .motto {
-            display: inline-block;
-            padding: 5px 15px;
-            background: rgba(249, 115, 22, 0.1);
-            color: var(--theme-orange);
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        /* Portals Section */
-        .portals {
-            max-width: 1000px;
-            margin: -40px auto 40px;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .portal-card {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid #eee;
-        }
-
-        .portal-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border-color: var(--theme-orange);
-        }
-
-        .icon-box {
-            width: 80px;
-            height: 80px;
-            background: #fff7ed;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-        }
-
-        .portal-card h2 {
-            margin: 0 0 10px;
-            color: var(--theme-dark);
-        }
-
-        .portal-card p {
-            color: #888;
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: var(--theme-dark);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--theme-orange);
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        /* Features/About */
-        .section {
-            padding: 60px 20px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .section-title h2 {
-            font-size: 2rem;
-            color: var(--theme-dark);
-            margin-bottom: 10px;
-        }
-
-        .section-title p {
-            color: #666;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-
-        .feature {
-            display: flex;
-            gap: 15px;
-        }
-
-        .feature-icon {
-            color: var(--theme-orange);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--theme-dark);
-            color: white;
-            padding: 40px 20px;
-            margin-top: 60px;
-        }
-
-        .footer-content {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-        }
-
-        .footer-col h4 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: var(--theme-orange);
-        }
-
-        .footer-col p {
-            color: #9ca3af;
-            line-height: 1.6;
-            margin: 0 0 10px;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            border-top: 1px solid #374151;
-            padding-top: 20px;
-            margin-top: 40px;
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-        @media (max-width: 600px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            /* Simplified mobile nav */
-        }
-    </style>
+    <!-- Placeholder Favicon -->
+    <link rel="icon" href="assets/logo.png">
 </head>
 
 <body>
 
-    <!-- Header -->
+    <!-- Header / Navigation -->
     <header>
-        <div class="logo-area">
-            <img src="assets/logo.png" alt="Logo"
-                onerror="this.onerror=null; this.src='https://via.placeholder.com/50?text=TH'">
-            <div class="logo-text">TOP HORIZON</div>
+        <div class="logo">
+            <img src="assets/logo.png" alt="Top Horizon Logo" onerror="this.style.display='none'">
+            <span>Top Horizon School</span>
         </div>
-        <nav class="nav-links">
-            <a href="#">Home</a>
-            <a href="#about">About</a>
-            <a href="#admission">Admission</a>
-            <a href="#portals">Portals</a>
-            <a href="#contact">Contact</a>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-link active">Home</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="academics.html" class="nav-link">Academics</a>
+            <a href="admissions.html" class="nav-link">Admissions</a>
+            <a href="news.html" class="nav-link">News & Events</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+            <a href="parent.html" class="nav-btn">Parent Portal</a>
         </nav>
-        <!-- Mobile Menu Button (Hidden on Desktop) -->
-        <button id="menu-btn" style="display:none; background:none; border:none; cursor:pointer;"
-            onclick="document.querySelector('.nav-links').style.display = document.querySelector('.nav-links').style.display==='flex'?'none':'flex'">
-            <i data-lucide="menu"></i>
-        </button>
+        <!-- Mobile Menu Icon -->
+        <div style="display:none;" id="mobile-menu-btn"><i data-lucide="menu"></i></div>
     </header>
 
-    <!-- Hero -->
-    <section class="hero"
-        style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; max-width:1100px; margin:0 auto; text-align:left;">
-        <div style="flex:1; min-width:300px; padding-right:40px;">
-            <div class="motto">KNOWLEDGE AND COURAGE</div>
-            <h1>Welcome to <br><span style="color:var(--theme-orange)">Top Horizon</span></h1>
-            <p style="font-size:1.1rem; line-height:1.6;">Nurturing the leaders of tomorrow with excellence, integrity,
-                and a commitment to lifelong learning in a safe and supportive environment.</p>
-            <div style="display:flex; gap:15px; margin-top:30px;">
-                <a href="#portals" class="btn btn-primary">Portal Access</a>
-                <a href="#about" class="btn" style="background:#e5e7eb; color:#374151;">Learn More</a>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-text">
+            <h5>Welcome to Top Horizon School</h5>
+            <h1>Nurturing Future Leaders with <span style="color:var(--primary)">Knowledge</span> & Courage</h1>
+            <p>A safe, warm, and inspiring environment where every child is encouraged to dream big and achieve
+                excellence.</p>
+            <div class="hero-btns">
+                <a href="admissions.html" class="btn btn-primary">Enroll Now</a>
+                <a href="contact.html" class="btn btn-secondary">Contact Us</a>
+            </div>
+            <div style="margin-top:20px; font-size:0.9rem; color:#666;">
+                🌟 <strong>Admissions Open</strong> for 2026/2027 Session!
             </div>
         </div>
-        <div style="flex:1; min-width:300px; display:flex; justify-content:center; margin-top:40px;">
-            <img src="assets/logo.png"
-                style="max-width:80%; height:auto; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.1));"
-                alt="School Hero Image">
+        <div class="hero-img">
+            <img src="assets/school.png" alt="Happy Children at Top Horizon School"
+                style="border-radius:20px; box-shadow: 20px 20px 0 var(--secondary);">
         </div>
     </section>
 
-    <!-- Portals -->
-    <section class="portals" id="portals">
-        <!-- Parent Portal -->
-        <div class="portal-card">
-            <div class="icon-box">
-                <i data-lucide="graduation-cap" style="width:40px; height:40px; color:#f97316;"></i>
-            </div>
-            <h2>Check Result</h2>
-            <p>Access termly reports, attendance records, and academic progress for your child.</p>
-            <a href="parent.html" class="btn btn-primary">Open Parent Portal</a>
-        </div>
-
-        <!-- Teacher Portal -->
-        <div class="portal-card">
-            <div class="icon-box">
-                <i data-lucide="users" style="width:40px; height:40px; color:#1f2937;"></i>
-            </div>
-            <h2>Teacher Login</h2>
-            <p>Authorized staff portal for managing student records, uploading results, and assessment.</p>
-            <a href="login.html" class="btn">Login to Dashboard</a>
-        </div>
-    </section>
-
-    <!-- Admission Banner -->
-    <section id="admission"
-        style="background:var(--theme-dark); color:white; padding:60px 20px; text-align:center; margin-top:60px;">
-        <div style="max-width:800px; margin:0 auto;">
-            <h2 style="color:white; font-size:2rem; margin-bottom:20px;">Admission is Open!</h2>
-            <p style="color:#d1d5db; margin-bottom:30px; font-size:1.1rem;">Enroll your child today for the upcoming
-                academic session. Provide them with the best foundation for a bright future.</p>
-            <button class="btn btn-primary" onclick="alert('Please visit the school office to pick up a form.')">Apply
-                Now</button>
-        </div>
-    </section>
-
-    <!-- About / Features -->
-    <section class="section" id="about">
+    <!-- Highlights / Quick Links -->
+    <section class="section" style="background: white;">
         <div class="section-title">
-            <h2>Why Choose Top Horizon?</h2>
-            <p>We provide a comprehensive educational experience tailored to every child's needs.</p>
+            <h2>School Highlights</h2>
+            <p>Discover what makes Top Horizon special.</p>
         </div>
-        <div class="features-grid">
-            <div class="feature">
-                <div class="feature-icon"><i data-lucide="book-open"></i></div>
-                <div>
-                    <h3>Quality Education</h3>
-                    <p style="color:#666;">Our curriculum is designed to challenge and inspire students at every level.
-                    </p>
-                </div>
+        <div class="grid-3">
+            <div class="card">
+                <div class="icon-circle"><i data-lucide="calendar"></i></div>
+                <h3>Upcoming Events</h3>
+                <p>Join us for our Annual Inter-House Sports Competition coming up next month!</p>
+                <a href="news.html" style="color:var(--primary); font-weight:bold;">View Calendar &rarr;</a>
             </div>
-            <div class="feature">
-                <div class="feature-icon"><i data-lucide="heart"></i></div>
-                <div>
-                    <h3>Character Building</h3>
-                    <p style="color:#666;">We focus on moral values, discipline, and social responsibility.</p>
-                </div>
+            <div class="card">
+                <div class="icon-circle"><i data-lucide="award"></i></div>
+                <h3>Achievements</h3>
+                <p>Our pupils consistently excel in Common Entrance and State Competitions.</p>
+                <a href="about.html" style="color:var(--primary); font-weight:bold;">Read More &rarr;</a>
             </div>
-            <div class="feature">
-                <div class="feature-icon"><i data-lucide="monitor"></i></div>
-                <div>
-                    <h3>Modern Facilities</h3>
-                    <p style="color:#666;">Equipped with computer labs and learning aids to support digital literacy.
-                    </p>
-                </div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon"><i data-lucide="music"></i></div>
-                <div>
-                    <h3>Extracurriculars</h3>
-                    <p style="color:#666;">Music, sports, and arts programs to develop well-rounded individuals.</p>
-                </div>
+            <div class="card">
+                <div class="icon-circle"><i data-lucide="book-open"></i></div>
+                <h3>Admission Open</h3>
+                <p>Spaces are available in Nursery and Primary 1-6. Secure your child's spot today.</p>
+                <a href="admissions.html" style="color:var(--primary); font-weight:bold;">Apply Now &rarr;</a>
             </div>
         </div>
     </section>
 
-    <!-- Anthem -->
-    <section style="background:#fff7ed; padding:60px 20px; text-align:center;">
-        <div style="max-width:600px; margin:0 auto;">
-            <i data-lucide="music" style="width:30px; height:30px; color:var(--theme-orange); margin-bottom:15px;"></i>
-            <h2 style="color:var(--theme-dark); margin-bottom:20px;">School Anthem</h2>
-            <p style="font-style:italic; line-height:1.8; color:#555;">
-                "Top Horizon, shining bright,<br>
-                Guiding us with wisdom's light.<br>
-                Leaders of tomorrow we shall be,<br>
-                With courage, faith, and honesty."
-            </p>
+    <!-- About Snippet -->
+    <section class="section" style="background:var(--light);">
+        <div style="display:flex; align-items:center; gap:50px; flex-wrap:wrap;">
+            <div style="flex:1;">
+                <img src="https://via.placeholder.com/500x350/0ea5e9/ffffff?text=Classroom+Activities"
+                    style="border-radius:20px; width:100%; box-shadow: -20px 20px 0 var(--accent);">
+            </div>
+            <div style="flex:1;">
+                <h2 style="font-size:2.5rem; margin-bottom:20px;">Why Choose <span style="color:var(--primary)">Top
+                        Horizon?</span></h2>
+                <div style="margin-bottom:20px;">
+                    <h4 style="display:flex; align-items:center; gap:10px;"><i data-lucide="check-circle"
+                            style="color:var(--primary)"></i> Experienced Teachers</h4>
+                    <p>Qualified and passionate educators dedicated to child development.</p>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <h4 style="display:flex; align-items:center; gap:10px;"><i data-lucide="check-circle"
+                            style="color:var(--primary)"></i> Modern Curriculum</h4>
+                    <p>Blending Nigerian curriculum with Montessori and digital learning methods.</p>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <h4 style="display:flex; align-items:center; gap:10px;"><i data-lucide="check-circle"
+                            style="color:var(--primary)"></i> Moral Values</h4>
+                    <p>Building character through discipline, respect, and integrity.</p>
+                </div>
+                <a href="about.html" class="btn btn-primary">Learn About Our Mission</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portal Quick Access -->
+    <section class="section" style="text-align:center; background:var(--dark); color:white;">
+        <h2 style="color:white; font-size:2.5rem;">Digital School Platform</h2>
+        <p style="color:#ccc; margin-bottom:40px;">Seamless access for parents and staff.</p>
+        <div style="display:flex; justify-content:center; gap:30px; flex-wrap:wrap;">
+            <a href="parent.html"
+                style="background:white; color:var(--dark); padding:30px; border-radius:15px; text-decoration:none; width:280px; transition:0.3s;">
+                <i data-lucide="user-check"
+                    style="width:50px; height:50px; color:var(--primary); margin-bottom:15px;"></i>
+                <h3>Check Results</h3>
+                <p style="color:#666; font-size:0.9rem;">Parents Login</p>
+            </a>
+            <a href="login.html"
+                style="background:var(--primary); color:white; padding:30px; border-radius:15px; text-decoration:none; width:280px; transition:0.3s;">
+                <i data-lucide="lock" style="width:50px; height:50px; color:white; margin-bottom:15px;"></i>
+                <h3>Staff Login</h3>
+                <p style="color:rgba(255,255,255,0.8); font-size:0.9rem;">Teachers Dashboard</p>
+            </a>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer id="contact">
-        <div class="footer-content">
+    <footer>
+        <div class="footer-grid">
             <div class="footer-col">
-                <h4>Contact Us</h4>
-                <p>70 AILEGUN RD<br>EJIGBO, LAGOS</p>
-                <p>Phone: 08033441520</p>
-                <p>Email: info@tophorizon.edu.ng</p>
+                <div style="font-size:1.5rem; font-weight:800; color:var(--primary); margin-bottom:20px;">Top Horizon
+                </div>
+                <p>Knowledge and Courage. Shaping the future one child at a time.</p>
+                <div style="margin-top:20px; display:flex; gap:15px;">
+                    <a href="#"><i data-lucide="facebook"></i></a>
+                    <a href="#"><i data-lucide="instagram"></i></a>
+                    <a href="#"><i data-lucide="twitter"></i></a>
+                </div>
             </div>
             <div class="footer-col">
-                <h4>Quick Links</h4>
-                <p><a href="parent.html" style="color:#bdc3c7; text-decoration:none;">Check Result</a></p>
-                <p><a href="login.html" style="color:#bdc3c7; text-decoration:none;">Staff Login</a></p>
-                <p><a href="#admission" style="color:#bdc3c7; text-decoration:none;">Admission</a></p>
+                <h3>Quick Links</h3>
+                <div class="footer-links">
+                    <a href="about.html">About Us</a>
+                    <a href="academics.html">Academics</a>
+                    <a href="admissions.html">Admission</a>
+                    <a href="news.html">News</a>
+                    <a href="contact.html">Contact</a>
+                </div>
             </div>
             <div class="footer-col">
-                <h4>Opening Hours</h4>
-                <p>Mon - Fri: 7:30 AM - 4:00 PM</p>
-                <p>Sat - Sun: Closed</p>
+                <h3>Contact Info</h3>
+                <p><i data-lucide="map-pin" style="width:16px;"></i> 70 AILEGUN RD, EJIGBO, LAGOS</p>
+                <p><i data-lucide="phone" style="width:16px;"></i> 08033441520</p>
+                <p><i data-lucide="mail" style="width:16px;"></i> info@tophorizon.edu.ng</p>
+                <p><i data-lucide="clock" style="width:16px;"></i> Mon-Fri: 7:30 AM - 4:00 PM</p>
             </div>
         </div>
-        <div class="footer-bottom">
-            &copy; 2026 Top Horizon Nursery and Primary School. All Rights Reserved.
+        <div class="copyright">
+            &copy; 2026 Top Horizon Nursery and Primary School. All Rights Reserved. | <a href="admin.html"
+                style="color:#555; text-decoration:none;">Admin</a>
         </div>
     </footer>
 
     <script>
         lucide.createIcons();
-
-        // Simple scroll reveal
-        document.addEventListener('scroll', () => {
-            const portals = document.querySelector('.portals');
-            if (portals) {
-                const top = portals.getBoundingClientRect().top;
-                if (top < window.innerHeight - 100) {
-                    portals.style.opacity = '1';
-                    portals.style.transform = 'translateY(0)';
-                }
-            }
-        });
-
-        // Mobile Menu Logic
-        const menuBtn = document.getElementById('menu-btn');
-        if (window.innerWidth < 768) {
-            menuBtn.style.display = 'block';
-            document.querySelector('.nav-links').style.display = 'none';
-            document.querySelector('.nav-links').style.flexDirection = 'column';
-            document.querySelector('.nav-links').style.position = 'absolute';
-            document.querySelector('.nav-links').style.top = '60px';
-            document.querySelector('.nav-links').style.left = '0';
-            document.querySelector('.nav-links').style.width = '100%';
-            document.querySelector('.nav-links').style.background = 'white';
-            document.querySelector('.nav-links').style.padding = '20px';
-            document.querySelector('.nav-links').style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)';
-        }
     </script>
 </body>
 
