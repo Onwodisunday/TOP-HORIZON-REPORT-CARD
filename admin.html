@@ -7,6 +7,7 @@
     <title>Admin Dashboard - Top Horizon</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
     <style>
         .admin-container {
             max-width: 1000px;
@@ -117,6 +118,62 @@
             </table>
         </div>
 
+        <!-- Student Database Upload -->
+        <div style="margin-bottom:40px;">
+            <h2 style="color:var(--theme-dark); display:flex; align-items:center; gap:10px;">
+                <i data-lucide="folder-up"></i> Student Database
+            </h2>
+            <div class="card" style="padding:20px;">
+                <p>Upload Excel files (e.g., <code>GRADE_5.xlsx</code>) to populate the student list for each class.
+                    <br><strong>Required Columns:</strong> Name, Admission Number, Gender (optional)
+                </p>
+
+                <div
+                    style="border: 2px dashed #ddd; border-radius: 10px; padding: 30px; text-align: center; margin-top: 20px; position: relative;">
+                    <input type="file" id="student-upload" accept=".xlsx, .xls, .csv"
+                        style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer;"
+                        onchange="handleFileUpload(this)">
+                    <i data-lucide="upload-cloud" style="width: 48px; height: 48px; color: #ccc;"></i>
+                    <p style="margin-top: 10px; color: #666;">Drag & Drop or Click to Upload Excel File</p>
+                </div>
+
+                <div id="upload-preview" style="margin-top: 20px; display: none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <h4 style="margin:0;">Preview: <span id="preview-filename"></span></h4>
+                        <div>
+                            <select id="preview-class-select" style="padding:5px;">
+                                <option value="">Select Class...</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                            <button class="btn btn-primary" onclick="saveStudentData()">Save to Database</button>
+                            <button class="btn btn-secondary" onclick="cancelUpload()">Cancel</button>
+                        </div>
+                    </div>
+                    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #eee;">
+                        <table class="data-table" style="font-size: 14px;">
+                            <thead>
+                                <tr id="preview-header">
+                                    <!-- Dynamic -->
+                                </tr>
+                            </thead>
+                            <tbody id="preview-body">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <p id="preview-count" style="margin-top:10px; font-size:12px; color:#666;"></p>
+                </div>
+
+                <!-- Existing Lists -->
+                <div style="margin-top: 30px;">
+                    <h4>Stored Classes</h4>
+                    <div id="stored-classes-list" style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <!-- Badges -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- System Data -->
         <div style="margin-bottom:40px;">
             <h2 style="color:var(--theme-dark); display:flex; align-items:center; gap:10px;">
@@ -159,7 +216,7 @@
 
         // Simple Admin Guard
         if (!sessionStorage.getItem('th_admin')) {
-            const pin = prompt('Enter Admin PIN:');
+            const pin = prompt('Enter Admin PIN (Default: admin123):');
             if (pin === 'admin123' || pin === '123456') {
                 sessionStorage.setItem('th_admin', 'true');
             } else {
@@ -284,6 +341,170 @@
         }
 
         render();
+        renderStoredClasses();
+
+        // --- Student Upload Logic ---
+        let currentUploadData = [];
+
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                // Assume first sheet
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }); // Array of Arrays
+
+                if (jsonData.length < 2) {
+                    alert('File appears empty or invalid format.');
+                    return;
+                }
+
+                currentUploadData = jsonData;
+                renderPreview(file.name);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function renderPreview(filename) {
+            document.getElementById('upload-preview').style.display = 'block';
+            document.getElementById('preview-filename').textContent = filename;
+
+            const headers = currentUploadData[0];
+            const rows = currentUploadData.slice(1);
+
+            // Header
+            const thead = document.getElementById('preview-header');
+            thead.innerHTML = headers.map(h => `<th>${h}</th>`).join('');
+
+            // Body (Limit to 5 for preview)
+            const tbody = document.getElementById('preview-body');
+            tbody.innerHTML = rows.slice(0, 5).map(row => `
+                <tr>${row.map(cell => `<td>${cell || ''}</td>`).join('')}</tr>
+            `).join('');
+
+            document.getElementById('preview-count').textContent = `Showing 5 of ${rows.length} records`;
+
+            // Auto-detect class from filename
+            const classSelect = document.getElementById('preview-class-select');
+
+            // Populate Class Select if empty
+            if (classSelect.options.length <= 1) {
+                // Common classes
+                const defaults = ["PRE-NURSERY", "NURSERY 1", "NURSERY 2", "PRIMARY 1", "PRIMARY 2", "PRIMARY 3", "PRIMARY 4", "PRIMARY 5"];
+                defaults.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = c;
+                    classSelect.appendChild(opt);
+                });
+            }
+
+            // Try to match filename
+            const nameUpper = filename.toUpperCase();
+            let match = "";
+            if (nameUpper.includes("GRADE 5") || nameUpper.includes("PRIMARY 5")) match = "PRIMARY 5";
+            else if (nameUpper.includes("GRADE 4") || nameUpper.includes("PRIMARY 4")) match = "PRIMARY 4";
+            else if (nameUpper.includes("GRADE 3") || nameUpper.includes("PRIMARY 3")) match = "PRIMARY 3";
+            else if (nameUpper.includes("GRADE 2") || nameUpper.includes("PRIMARY 2")) match = "PRIMARY 2";
+            else if (nameUpper.includes("GRADE 1") || nameUpper.includes("PRIMARY 1")) match = "PRIMARY 1";
+            else if (nameUpper.includes("NURSERY 2")) match = "NURSERY 2";
+            else if (nameUpper.includes("NURSERY 1")) match = "NURSERY 1";
+
+            if (match) classSelect.value = match;
+        }
+
+        function cancelUpload() {
+            document.getElementById('upload-preview').style.display = 'none';
+            document.getElementById('student-upload').value = '';
+            currentUploadData = [];
+        }
+
+        function saveStudentData() {
+            const cls = document.getElementById('preview-class-select').value;
+            if (!cls) {
+                alert("Please select a Class to save this data to.");
+                return;
+            }
+
+            if (currentUploadData.length < 2) return;
+
+            // Transform to Objects based on headers
+            const headers = currentUploadData[0].map(h => h.toString().trim().toLowerCase());
+            const rawRows = currentUploadData.slice(1);
+
+            // Identify columns
+            let nameIdx = headers.findIndex(h => h.includes('name')); // Strict "name" check first
+            if (nameIdx === -1) {
+                // Fallback: look for "student" but exclude ID/Number markers
+                nameIdx = headers.findIndex(h => h.includes('student') && !h.includes('id') && !h.includes('no') && !h.includes('number') && !h.includes('code'));
+            }
+
+            const admIdx = headers.findIndex(h => {
+                const lower = h.toLowerCase();
+                // Must allow 'adm', 'matric', 'reg'
+                // But strictly EXCLUDE 's/n', 'serial', 'no.' (unless it has adm/reg)
+                if (lower.includes('s/n') || lower.includes('serial') || lower === 'no' || lower === 'no.') return false;
+
+                return lower.includes('adm') || lower.includes('id') || lower.includes('matric') || lower.includes('reg') || lower.includes('number');
+            });
+
+            const sexIdx = headers.findIndex(h => h.includes('sex') || h.includes('gender'));
+
+            if (nameIdx === -1) {
+                alert("Could not identify a 'Name' column. Headers found: " + headers.join(', '));
+                return;
+            }
+
+            const students = rawRows.map(row => {
+                return {
+                    name: row[nameIdx],
+                    admCode: admIdx > -1 ? row[admIdx] : '',
+                    sex: sexIdx > -1 ? row[sexIdx] : ''
+                };
+            }).filter(s => s.name); // Filter empty names
+
+            // Save
+            const key = `th_students_${cls}`;
+            localStorage.setItem(key, JSON.stringify(students));
+
+            alert(`Successfully saved ${students.length} students to ${cls}.`);
+            cancelUpload();
+            renderStoredClasses();
+        }
+
+        function renderStoredClasses() {
+            const container = document.getElementById('stored-classes-list');
+            container.innerHTML = '';
+
+            let found = false;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('th_students_')) {
+                    found = true;
+                    const cls = key.replace('th_students_', '');
+                    const count = JSON.parse(localStorage.getItem(key) || '[]').length;
+
+                    const badge = document.createElement('div');
+                    badge.style.cssText = 'background:#eee; padding:5px 10px; border-radius:15px; font-size:12px; display:flex; gap:5px; align-items:center;';
+                    badge.innerHTML = `<strong>${cls}</strong> <span>(${count})</span> <span style="cursor:pointer; color:red; margin-left:5px;" onclick="deleteAcc('${key}')">&times;</span>`;
+                    container.appendChild(badge);
+                }
+            }
+            if (!found) container.innerHTML = '<span style="color:#999; font-size:12px;">No uploaded data yet.</span>';
+        }
+
+        function deleteAcc(key) {
+            if (confirm('Delete this student list?')) {
+                localStorage.removeItem(key);
+                renderStoredClasses();
+            }
+        }
+
     </script>
 </body>
 

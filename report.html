@@ -59,6 +59,115 @@
                 classInput.style.backgroundColor = '#f0f0f0';
                 // Trigger input event to update preview
                 classInput.dispatchEvent(new Event('input'));
+                classInput.dispatchEvent(new Event('input'));
+                classInput.dispatchEvent(new Event('input'));
+            }
+
+            // --- Load Student List (Case Insensitive) ---
+            const className = user.class.toUpperCase();
+            let studentList = JSON.parse(localStorage.getItem(`th_students_${className}`) || '[]');
+
+            // Fallback: Try exact match if uppercase failed (though admin uses uppercase)
+            if (studentList.length === 0) {
+                studentList = JSON.parse(localStorage.getItem(`th_students_${user.class}`) || '[]');
+            }
+
+            const datalist = document.getElementById('student-list');
+            const nameInput = document.getElementById('inp-name');
+
+            if (studentList.length > 0) {
+                console.log(`Loaded ${studentList.length} students for ${className}`);
+
+                // Show indicator
+                const indicator = document.createElement('span');
+                indicator.style.fontSize = '10px';
+                indicator.style.color = 'green';
+                indicator.textContent = `✓ ${studentList.length} Students Loaded`;
+
+                // Convert Input to Select
+                const oldInput = document.getElementById('inp-name');
+                const parent = oldInput.parentNode;
+
+                // Insert Indicator
+                parent.insertBefore(indicator, oldInput);
+
+                // Create Select
+                const select = document.createElement('select');
+                select.id = 'inp-name';
+                select.style.width = '100%';
+                select.style.padding = '10px';
+                select.style.marginBottom = '10px';
+                select.style.border = '1px solid #ddd';
+                select.style.borderRadius = '5px';
+
+                // Default Option
+                const defOpt = document.createElement('option');
+                defOpt.value = "";
+                defOpt.textContent = "Select Student...";
+                select.appendChild(defOpt);
+
+                // Populate
+                studentList.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.name;
+                    opt.textContent = `${s.name} ${s.admCode ? '(' + s.admCode + ')' : ''}`;
+                    select.appendChild(opt);
+                });
+
+                // Add Listener for Auto-fill & UI Update
+                select.addEventListener('change', (e) => {
+                    const val = (e.target.value || '').trim();
+
+                    // Update Report Preview Name immediately
+                    const outName = document.getElementById('out-name');
+                    if (outName) outName.textContent = val.toUpperCase();
+
+                    // Update Page Title
+                    document.title = `Report - ${val} - ${user.class}`;
+
+                    const match = studentList.find(s => s.name.toUpperCase() === val.toUpperCase());
+                    if (match) {
+                        if (match.admCode) {
+                            const admEl = document.getElementById('inp-adm-no');
+                            if (admEl) {
+                                admEl.value = match.admCode;
+                                // Trigger 'input' event so deep listeners (like in ui.js) run
+                                admEl.dispatchEvent(new Event('input'));
+
+                                // Explicitly update preview just in case
+                                const outAdm = document.getElementById('out-adm-no');
+                                if (outAdm) outAdm.textContent = match.admCode.toUpperCase();
+                            }
+                        }
+                        if (match.sex) {
+                            const sexEl = document.getElementById('inp-sex');
+                            if (sexEl) {
+                                const s = match.sex.toLowerCase();
+                                if (s.startsWith('m')) sexEl.value = 'Male';
+                                else if (s.startsWith('f')) sexEl.value = 'Female';
+                                sexEl.dispatchEvent(new Event('input')); // Trigger UI update
+
+                                // Explicitly update preview
+                                const outSex = document.getElementById('out-sex');
+                                if (outSex) outSex.textContent = sexEl.value.toUpperCase();
+                            }
+                        }
+                    } else {
+                        // Clear if no match (or empty selection)
+                        document.getElementById('inp-adm-no').value = '';
+                        document.getElementById('out-adm-no').textContent = '';
+                        document.getElementById('inp-sex').value = '';
+                        document.getElementById('out-sex').textContent = '';
+                    }
+                });
+
+                // Replace
+                parent.replaceChild(select, oldInput);
+                // Remove datalist as it's no longer needed
+                if (datalist) datalist.remove();
+
+            } else {
+                console.warn(`No students found for ${className}`);
             }
         }
 
@@ -81,7 +190,8 @@
                 </div>
                 <div class="card-body">
                     <div class="form-grid">
-                        <input type="text" id="inp-name" placeholder="Name">
+                        <input type="text" id="inp-name" placeholder="Name" list="student-list">
+                        <datalist id="student-list"></datalist>
                         <input type="text" id="inp-class" placeholder="Class (e.g. JS2)">
                         <input type="text" id="inp-roll" placeholder="No. in Roll">
                         <input type="text" id="inp-adm-no" placeholder="Admission Number" style="width:100%">

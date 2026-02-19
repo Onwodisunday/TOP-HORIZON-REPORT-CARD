@@ -64,23 +64,40 @@
             <p>Discover what makes Top Horizon special.</p>
         </div>
         <div class="grid-3">
-            <div class="card">
-                <div class="icon-circle"><i data-lucide="calendar"></i></div>
-                <h3>Upcoming Events</h3>
-                <p>Join us for our Annual Inter-House Sports Competition coming up next month!</p>
-                <a href="news.html" style="color:var(--primary); font-weight:bold;">View Calendar &rarr;</a>
+            <!-- Creative Card 1: Gradient -->
+            <div class="card"
+                style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border:none; border-radius: 20px 0 20px 0;">
+                <div class="icon-circle" style="background: rgba(255,255,255,0.2); color: white;"><i
+                        data-lucide="calendar"></i></div>
+                <h3 style="color:white;">Upcoming Events</h3>
+                <p style="color:rgba(255,255,255,0.9);">Join us for our Annual Inter-House Sports Competition coming up
+                    next month!</p>
+                <a href="news.html" style="color:var(--secondary); font-weight:bold; text-decoration:underline;">View
+                    Calendar &rarr;</a>
             </div>
-            <div class="card">
-                <div class="icon-circle"><i data-lucide="award"></i></div>
+
+            <!-- Creative Card 2: Bordered -->
+            <div class="card"
+                style="background: white; border: 3px solid var(--secondary); border-radius: 0 20px 0 20px; position:relative; overflow:hidden;">
+                <div
+                    style="position:absolute; top:-20px; right:-20px; width:80px; height:80px; background:var(--secondary); border-radius:50%; opacity:0.2;">
+                </div>
+                <div class="icon-circle" style="background: var(--light); color: var(--primary);"><i
+                        data-lucide="award"></i></div>
                 <h3>Achievements</h3>
                 <p>Our pupils consistently excel in Common Entrance and State Competitions.</p>
                 <a href="about.html" style="color:var(--primary); font-weight:bold;">Read More &rarr;</a>
             </div>
-            <div class="card">
-                <div class="icon-circle"><i data-lucide="book-open"></i></div>
-                <h3>Admission Open</h3>
-                <p>Spaces are available in Nursery and Primary 1-6. Secure your child's spot today.</p>
-                <a href="admissions.html" style="color:var(--primary); font-weight:bold;">Apply Now &rarr;</a>
+
+            <!-- Creative Card 3: Dark Mode -->
+            <div class="card" style="background: var(--dark); color: white; border:none; border-radius: 20px;">
+                <div class="icon-circle" style="background: var(--secondary); color: var(--dark);"><i
+                        data-lucide="book-open"></i></div>
+                <h3 style="color:white;">Admission Open</h3>
+                <p style="color:#ccc;">Spaces are available in Nursery and Primary 1-6. Secure your child's spot.</p>
+                <a href="admissions.html" class="btn btn-primary"
+                    style="margin-top:10px; display:inline-block; box-shadow:none; padding:10px 25px;">Apply Now
+                    &rarr;</a>
             </div>
         </div>
     </section>
@@ -89,7 +106,7 @@
     <section class="section" style="background:var(--light);">
         <div style="display:flex; align-items:center; gap:50px; flex-wrap:wrap;">
             <div style="flex:1;">
-                <img src="https://via.placeholder.com/500x350/0ea5e9/ffffff?text=Classroom+Activities"
+                <img src="assets/students.png" alt="Students with Medals"
                     style="border-radius:20px; width:100%; box-shadow: -20px 20px 0 var(--accent);">
             </div>
             <div style="flex:1;">
@@ -137,39 +154,77 @@
     </section>
 
     <!-- Footer -->
-    <footer>
-        <div class="footer-grid">
+    <!-- Footer -->
+    <footer style="border-top: 5px solid var(--secondary);">
+        <div class="footer-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+            <!-- Brand & Socials -->
             <div class="footer-col">
-                <div style="font-size:1.5rem; font-weight:800; color:var(--primary); margin-bottom:20px;">Top Horizon
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                    <img src="assets/logo.png" style="height:50px; filter: brightness(0) invert(1);">
+                    <div style="font-size:1.5rem; font-weight:800; color:white;">Top Horizon</div>
                 </div>
-                <p>Knowledge and Courage. Shaping the future one child at a time.</p>
+                <p style="color:#ccc; line-height:1.8;">Nurturing future leaders through a blend of academic excellence
+                    and moral discipline. Join our community today.</p>
                 <div style="margin-top:20px; display:flex; gap:15px;">
-                    <a href="#"><i data-lucide="facebook"></i></a>
-                    <a href="#"><i data-lucide="instagram"></i></a>
-                    <a href="#"><i data-lucide="twitter"></i></a>
+                    <a href="#"
+                        style="background:rgba(255,255,255,0.1); width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:var(--secondary);"><i
+                            data-lucide="facebook"></i></a>
+                    <a href="#"
+                        style="background:rgba(255,255,255,0.1); width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:var(--secondary);"><i
+                            data-lucide="instagram"></i></a>
+                    <a href="#"
+                        style="background:rgba(255,255,255,0.1); width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:var(--secondary);"><i
+                            data-lucide="twitter"></i></a>
                 </div>
             </div>
+
+            <!-- Our Programs -->
             <div class="footer-col">
-                <h3>Quick Links</h3>
+                <h3 style="color:var(--secondary); border-left:3px solid var(--primary); padding-left:10px;">Our
+                    Programs</h3>
+                <div class="footer-links">
+                    <a href="#">Creche & Playgroup</a>
+                    <a href="#">Nursery Education</a>
+                    <a href="#">Primary Education</a>
+                    <a href="#">Montessori Methods</a>
+                    <a href="#">Coding & Robotics Club</a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-col">
+                <h3 style="color:var(--secondary); border-left:3px solid var(--primary); padding-left:10px;">Quick Links
+                </h3>
                 <div class="footer-links">
                     <a href="about.html">About Us</a>
-                    <a href="academics.html">Academics</a>
-                    <a href="admissions.html">Admission</a>
-                    <a href="news.html">News</a>
-                    <a href="contact.html">Contact</a>
+                    <a href="academics.html">Academic Calendar</a>
+                    <a href="admissions.html">Admission Guide</a>
+                    <a href="parent.html">Check Results</a>
+                    <a href="contact.html">Contact Support</a>
                 </div>
             </div>
+
+            <!-- Newsletter -->
             <div class="footer-col">
-                <h3>Contact Info</h3>
-                <p><i data-lucide="map-pin" style="width:16px;"></i> 70 AILEGUN RD, EJIGBO, LAGOS</p>
-                <p><i data-lucide="phone" style="width:16px;"></i> 08033441520</p>
-                <p><i data-lucide="mail" style="width:16px;"></i> info@tophorizon.edu.ng</p>
-                <p><i data-lucide="clock" style="width:16px;"></i> Mon-Fri: 7:30 AM - 4:00 PM</p>
+                <h3 style="color:var(--secondary); border-left:3px solid var(--primary); padding-left:10px;">Newsletter
+                </h3>
+                <p style="color:#ccc; font-size:0.9rem;">Subscribe to get the latest school news and event updates.</p>
+                <form action="#" style="margin-top:15px; display:flex; gap:5px;">
+                    <input type="email" placeholder="Your Email"
+                        style="padding:10px; border-radius:5px; border:none; width:100%; outline:none;">
+                    <button type="button"
+                        style="background:var(--secondary); color:var(--dark); border:none; padding:10px; border-radius:5px; cursor:pointer; font-weight:bold;">Go</button>
+                </form>
+                <div style="margin-top:20px;">
+                    <p><i data-lucide="phone" style="width:16px; color:var(--secondary);"></i> 08033441520</p>
+                    <p><i data-lucide="mail" style="width:16px; color:var(--secondary);"></i> tophorizonschool@gmail.com
+                    </p>
+                </div>
             </div>
         </div>
-        <div class="copyright">
+        <div class="copyright" style="border-top:1px solid rgba(255,255,255,0.1);">
             &copy; 2026 Top Horizon Nursery and Primary School. All Rights Reserved. | <a href="admin.html"
-                style="color:#555; text-decoration:none;">Admin</a>
+                style="color:var(--secondary); text-decoration:none;">Admin Login</a>
         </div>
     </footer>
 

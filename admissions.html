@@ -41,8 +41,7 @@
             <p>Give your child the gift of quality education in a supportive and disciplined environment.</p>
         </div>
         <div class="hero-img">
-            <img src="https://via.placeholder.com/500x300/eab308/ffffff?text=Join+Us"
-                style="border-radius:20px; box-shadow: 20px 20px 0 var(--dark);">
+            <img src="assets/building.png" style="border-radius:20px; box-shadow: 20px 20px 0 var(--dark);">
         </div>
     </div>
 
@@ -94,30 +93,124 @@
                 </div>
             </div>
         </div>
-    </div>
+        <!-- Admission Form Section -->
+        <div class="section" style="background:var(--light);">
+            <div
+                style="max-width:800px; margin:0 auto; background:white; padding:40px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
+                <h2 style="text-align:center; color:var(--primary); margin-bottom:10px;">Online Admission Form</h2>
+                <p style="text-align:center; margin-bottom:30px; color:#666;">Fill out the form below to start your
+                    application process.</p>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-col">
-                <div style="font-size:1.5rem; font-weight:800; color:var(--primary); margin-bottom:20px;">Top Horizon
+                <form action="https://formspree.io/f/xrealraa" method="POST">
+                    <input type="hidden" name="_subject" value="New Admission Application">
+
+                    <!-- Child's Information -->
+                    <h3
+                        style="border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px; color:var(--secondary);">
+                        Child's Information</h3>
+                    <div class="grid-2">
+                        <div style="margin-bottom:20px;">
+                            <label style="font-weight:600; display:block; margin-bottom:5px;">Child's Full Name</label>
+                            <input type="text" name="child_name"
+                                style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;"
+                                placeholder="Surname Firstname" required>
+                        </div>
+                        <div style="margin-bottom:20px;">
+                            <label style="font-weight:600; display:block; margin-bottom:5px;">Date of Birth</label>
+                            <input type="date" name="dob"
+                                style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;" required>
+                        </div>
+                        <div style="margin-bottom:20px;">
+                            <label style="font-weight:600; display:block; margin-bottom:5px;">Gender</label>
+                            <select name="gender"
+                                style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                                <option>Male</option>
+                                <option>Female</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom:20px;">
+                            <label style="font-weight:600; display:block; margin-bottom:5px;">Class Applying For</label>
+                            <select name="class_applying"
+                                style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                                <option>Creche</option>
+                                <option>Nursery 1</option>
+                                <option>Nursery 2</option>
+                                <option>Primary 1</option>
+                                <option>Primary 2</option>
+                                <option>Primary 3</option>
+                                <option>Primary 4</option>
+                                <option>Primary 5</option>
+                                <option>Primary 6</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Parent's Information -->
+                    <h3
+                        style="border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px; color:var(--secondary); margin-top:20px;">
+                        Parent/Guardian Information</h3>
+                    <div class="grid-2">
+                        <div style="margin-bottom:20px;">
+                            <label style="font-weight:600; display:block; margin-bottom:5px;">Parent's Full Name</label>
+                            <input type="text" name="parent_name"
+                                style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;"
+                                placeholder="Mr/Mrs..." required>
+                        </div>
+                        <div style="margin-bottom:20px;">
+                            <label style="font-weight:600; display:block; margin-bottom:5px;">Phone Number</label>
+                            <input type="tel" name="phone"
+                                style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;"
+                                placeholder="080..." required>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <label style="font-weight:600; display:block; margin-bottom:5px;">Email Address</label>
+                        <input type="email" name="email"
+                            style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;"
+                            placeholder="parent@example.com" required>
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <label style="font-weight:600; display:block; margin-bottom:5px;">Residential Address</label>
+                        <textarea name="address"
+                            style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; height:100px;"
+                            placeholder="Full Home Address" required></textarea>
+                    </div>
+
+                    <div style="text-align:center; margin-top:30px;">
+                        <button type="submit" class="btn btn-primary"
+                            style="width:100%; max-width:300px; padding:15px; font-size:1.1rem;">Submit
+                            Application</button>
+                        <p style="margin-top:10px; font-size:0.9rem; color:#888;">We will contact you within 24 hours.
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div style="font-size:1.5rem; font-weight:800; color:var(--primary); margin-bottom:20px;">Top
+                        Horizon
+                    </div>
+                    <p>Knowledge and Courage.</p>
                 </div>
-                <p>Knowledge and Courage.</p>
+                <div class="footer-col">
+                    <h3>Contact Info</h3>
+                    <p>70 AILEGUN RD<br>EJIGBO, LAGOS</p>
+                    <p>08033441520</p>
+                    <p>tophorizonschool@gmail.com</p>
+                </div>
             </div>
-            <div class="footer-col">
-                <h3>Contact Info</h3>
-                <p>70 AILEGUN RD<br>EJIGBO, LAGOS</p>
-                <p>08033441520</p>
+            <div class="copyright">
+                &copy; 2026 Top Horizon Nursery and Primary School.
             </div>
-        </div>
-        <div class="copyright">
-            &copy; 2026 Top Horizon Nursery and Primary School.
-        </div>
-    </footer>
+        </footer>
 
-    <script>
-        lucide.createIcons();
-    </script>
+        <script>
+            lucide.createIcons();
+        </script>
 </body>
 
 </html>

@@ -87,20 +87,22 @@
         <div
             style="max-width:600px; margin:0 auto; background:white; padding:40px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
             <h3 style="text-align:center; margin-bottom:30px;">Send Us a Message</h3>
-            <form onsubmit="event.preventDefault(); alert('Message sent! We will contact you shortly.');">
+            <form action="https://formspree.io/f/xrealraa" method="POST">
                 <div style="margin-bottom:20px;">
                     <label style="font-weight:600; display:block; margin-bottom:5px;">Your Name</label>
-                    <input type="text" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;"
+                    <input type="text" name="name"
+                        style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;"
                         placeholder="John Doe" required>
                 </div>
                 <div style="margin-bottom:20px;">
                     <label style="font-weight:600; display:block; margin-bottom:5px;">Email Address</label>
-                    <input type="email" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;"
+                    <input type="email" name="email"
+                        style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;"
                         placeholder="john@example.com" required>
                 </div>
                 <div style="margin-bottom:20px;">
                     <label style="font-weight:600; display:block; margin-bottom:5px;">Subject</label>
-                    <select style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                    <select name="subject" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
                         <option>General Inquiry</option>
                         <option>Admission</option>
                         <option>Fees</option>
@@ -109,7 +111,8 @@
                 </div>
                 <div style="margin-bottom:20px;">
                     <label style="font-weight:600; display:block; margin-bottom:5px;">Message</label>
-                    <textarea style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; height:150px;"
+                    <textarea name="message"
+                        style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; height:150px;"
                         placeholder="How can we help you?" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%;">Send Message</button>
@@ -129,6 +132,7 @@
                 <h3>Contact Info</h3>
                 <p>70 AILEGUN RD<br>EJIGBO, LAGOS</p>
                 <p>08033441520</p>
+                <p>tophorizonschool@gmail.com</p>
             </div>
         </div>
         <div class="copyright">
